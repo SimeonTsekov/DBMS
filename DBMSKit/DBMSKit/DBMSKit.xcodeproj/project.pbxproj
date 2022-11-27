@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		EC5B6BD329339BD7009670FD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5B6BD229339BD7009670FD /* main.swift */; };
+		EC5B6BDC2933B777009670FD /* ParsingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5B6BDB2933B777009670FD /* ParsingModels.swift */; };
+		EC5B6BE12933C58A009670FD /* StringHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5B6BE02933C58A009670FD /* StringHelpers.swift */; };
+		EC5B6BE32933CAB7009670FD /* CommandParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5B6BE22933CAB7009670FD /* CommandParser.swift */; };
+		EC5B6BE52933CBC0009670FD /* QueryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5B6BE42933CBC0009670FD /* QueryManager.swift */; };
+		EC5B6BE82933CFF3009670FD /* ArrayHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5B6BE72933CFF3009670FD /* ArrayHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +30,11 @@
 /* Begin PBXFileReference section */
 		EC5B6BCF29339BD7009670FD /* DBMSKit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DBMSKit; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC5B6BD229339BD7009670FD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		EC5B6BDB2933B777009670FD /* ParsingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsingModels.swift; sourceTree = "<group>"; };
+		EC5B6BE02933C58A009670FD /* StringHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHelpers.swift; sourceTree = "<group>"; };
+		EC5B6BE22933CAB7009670FD /* CommandParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandParser.swift; sourceTree = "<group>"; };
+		EC5B6BE42933CBC0009670FD /* QueryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryManager.swift; sourceTree = "<group>"; };
+		EC5B6BE72933CFF3009670FD /* ArrayHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayHelpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,9 +67,38 @@
 		EC5B6BD129339BD7009670FD /* DBMSKit */ = {
 			isa = PBXGroup;
 			children = (
+				EC5B6BE92933D502009670FD /* Models */,
+				EC5B6BDF2933C575009670FD /* Helpers */,
+				EC5B6BD92933B64A009670FD /* Command Parsing */,
 				EC5B6BD229339BD7009670FD /* main.swift */,
+				EC5B6BE42933CBC0009670FD /* QueryManager.swift */,
 			);
 			path = DBMSKit;
+			sourceTree = "<group>";
+		};
+		EC5B6BD92933B64A009670FD /* Command Parsing */ = {
+			isa = PBXGroup;
+			children = (
+				EC5B6BDB2933B777009670FD /* ParsingModels.swift */,
+				EC5B6BE22933CAB7009670FD /* CommandParser.swift */,
+			);
+			path = "Command Parsing";
+			sourceTree = "<group>";
+		};
+		EC5B6BDF2933C575009670FD /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				EC5B6BE02933C58A009670FD /* StringHelpers.swift */,
+				EC5B6BE72933CFF3009670FD /* ArrayHelpers.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		EC5B6BE92933D502009670FD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -120,7 +159,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC5B6BE52933CBC0009670FD /* QueryManager.swift in Sources */,
+				EC5B6BE82933CFF3009670FD /* ArrayHelpers.swift in Sources */,
+				EC5B6BDC2933B777009670FD /* ParsingModels.swift in Sources */,
 				EC5B6BD329339BD7009670FD /* main.swift in Sources */,
+				EC5B6BE32933CAB7009670FD /* CommandParser.swift in Sources */,
+				EC5B6BE12933C58A009670FD /* StringHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

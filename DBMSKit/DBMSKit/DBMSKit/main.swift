@@ -7,5 +7,15 @@
 
 import Foundation
 
-print("Hello, World!")
+let manager = QueryManager()
+print("Enter a query:")
 
+while let input = readLine() {
+    guard input != "quit" else {
+        break
+    }
+
+    manager.handleQuery(query: input)
+    
+    print("Enter a query:")
+}
