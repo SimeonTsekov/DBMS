@@ -9,6 +9,7 @@ import Foundation
 
 enum DBKeyword: String {
     case dbCreate = "CREATE"
+    case dbDefault = "DEFAULT"
     case dbDrop = "DROP"
     case dbList = "LIST"
     case dbInfo = "INFO"

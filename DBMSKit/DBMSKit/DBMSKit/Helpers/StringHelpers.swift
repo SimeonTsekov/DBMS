@@ -39,7 +39,9 @@ class StringHelpers {
             }
         }
         
-        tokens.append(word)
+        if word != "" {
+            tokens.append(word)
+        }
         return tokens
     }
 
@@ -63,6 +65,26 @@ class StringHelpers {
         
         for element in ArrayHelpers.removeLastElement(array: characters) {
             newString.append(element)
+        }
+        
+        return newString
+    }
+
+    static func clearStringWhitespaces(string: String) -> String {
+        var newString = ""
+        var lastChar: Character = "l"
+        
+        for char in string {
+            if char == " " && lastChar == " " {
+                continue
+            }
+            
+            newString.append(char)
+            lastChar = char
+        }
+        
+        if newString.last == " " {
+            newString = removeLastCharacter(string: newString)
         }
         
         return newString
