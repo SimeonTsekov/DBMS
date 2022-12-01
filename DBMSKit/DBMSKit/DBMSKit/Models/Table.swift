@@ -32,6 +32,18 @@ struct TableSchema: Codable {
         try container.encode(name, forKey: .name)
         try container.encode(fields, forKey: .fields)
     }
+
+    func toString() -> String {
+        var string = "Name: \(name)\n"
+        for field in fields {
+            string.append("\t field: \(field.name):\(field.type.rawValue)")
+            if let defaultValue = field.defaultValue {
+                string.append(" default \(defaultValue)")
+            }
+            string.append("\n")
+        }
+        return string
+    }
 }
 
 struct TableData: Codable {
@@ -53,6 +65,16 @@ struct TableData: Codable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(pages, forKey: .pages)
+    }
+
+    func toString() -> String {
+        var count = 0
+        
+        for page in pages {
+            count += page.values.count
+        }
+
+        return "Table has \(count) calues"
     }
 }
 
@@ -124,7 +146,7 @@ struct Field: Codable {
             return
         }
         type = dbType
-        defaultValue = try values.decode(String.self, forKey: .defaultValue)
+        defaultValue = try values.decodeIfPresent(String.self, forKey: .defaultValue)
     }
     
     func encode(to encoder: Encoder) throws {

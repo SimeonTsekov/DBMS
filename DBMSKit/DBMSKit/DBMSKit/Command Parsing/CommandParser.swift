@@ -39,13 +39,18 @@ class CommandParser {
     }
 
     func parseCreate(with tokens: [Any], for query: Query) {
+        guard !tokens.isEmpty else {
+            print("Must provide arguments")
+            return
+        }
+
         var varName: String = ""
         var varType: DBType = .dbString
         var varDefaultValue: String = ""
         var lastObject: Any
 
         guard let subject = tokens[0] as? String else {
-            print("Couldn't parse object as String!")
+            print("Couldn't parse object as String")
             return
         }
         
@@ -141,6 +146,11 @@ class CommandParser {
     }
     
     func parseDrop(with tokens: [Any], for query: Query) {
+        guard !tokens.isEmpty else {
+            print("Must provide arguments")
+            return
+        }
+
         var lastToken: Any = tokens[0]
         var subjects: [String] = []
 
@@ -167,5 +177,19 @@ class CommandParser {
         }
         
         query.subjects = subjects
+    }
+
+    func parseInfo(with tokens: [Any], for query: Query) {
+        guard tokens.count == 1 else {
+            print("Parse can only have 1 argument")
+            return
+        }
+        
+        guard let tableName = tokens[0] as? String else {
+            print("Must only provide a table name")
+            return
+        }
+
+        query.subject = tableName
     }
 }

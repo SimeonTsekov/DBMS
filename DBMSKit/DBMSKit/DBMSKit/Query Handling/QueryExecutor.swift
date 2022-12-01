@@ -30,6 +30,7 @@ class QueryExecutor {
     func createTable(query: Query) {
         var fileUrl = baseUrl
         var schemaUrl = baseUrl
+        let jsonEncoder = JSONEncoder()
         
         guard let tableName = query.subject as? String else {
             print("Wrong table name format")
@@ -57,8 +58,15 @@ class QueryExecutor {
         let tableSchema = TableSchema(name: tableName, fields: fields)
         let tableData = TableData(pages: [rootPage])
 
-        manager.createFile(atPath: schemaUrl.path, contents: Data(base64Encoded: String(describing: tableSchema)), attributes: nil)
-        manager.createFile(atPath: fileUrl.path, contents: Data(base64Encoded: String(describing: tableData)), attributes: nil)
+        do {
+            let schemaData = try jsonEncoder.encode(tableSchema)
+            let tableJsonData = try jsonEncoder.encode(tableData)
+
+            manager.createFile(atPath: schemaUrl.path, contents: schemaData, attributes: nil)
+            manager.createFile(atPath: fileUrl.path, contents: tableJsonData, attributes: nil)
+        } catch let error {
+            print(error.localizedDescription)
+        }
     }
 
     func dropTable(query: Query) {
@@ -107,6 +115,42 @@ class QueryExecutor {
     }
 
     func tableInfo(query: Query) {
+        var fileUrl = baseUrl
+        var schemaUrl = baseUrl
+        let jsonDecoder = JSONDecoder()
+
+        guard let tableName = query.subject as? String else {
+            print("Wrong table name format")
+            return
+        }
+
+        fileUrl.appendPathComponent(tableName)
+        fileUrl.appendPathExtension("bin")
+        
+        schemaUrl.appendPathComponent(tableName + "Schema")
+        schemaUrl.appendPathExtension("bin")
+        
+        guard manager.fileExists(atPath: fileUrl.path),
+              manager.fileExists(atPath: schemaUrl.path) else {
+            print("Table \(tableName) doesn't exist")
+            return
+        }
+
+        guard let schemaData = manager.contents(atPath: schemaUrl.path),
+              let tableData = manager.contents(atPath: fileUrl.path) else {
+            print("File \(tableName).bin is empty")
+            return
+        }
+        do {
+            let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
+            let data = try jsonDecoder.decode(TableData.self, from: tableData)
+
+            print(schema.toString())
+            print(data.toString())
+            print("Data is \(tableData.count) bytes\n")
+        } catch let error {
+            print(error.localizedDescription)
+        }
     }
 
     func select(query: Query) {

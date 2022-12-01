@@ -39,6 +39,7 @@ class QueryManager {
             }
             executor.listTables()
         case .dbInfo:
+            parser.parseInfo(with: arguments, for: query)
             executor.tableInfo(query: query)
         case .dbSelect:
             executor.select(query: query)
