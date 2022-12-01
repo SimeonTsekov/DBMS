@@ -32,7 +32,7 @@ class QueryExecutor {
         var schemaUrl = baseUrl
         
         guard let tableName = query.subject as? String else {
-            assertionFailure("Wrong table name format")
+            print("Wrong table name format")
             return
         }
         
@@ -44,12 +44,12 @@ class QueryExecutor {
         
         guard !manager.fileExists(atPath: fileUrl.path),
               !manager.fileExists(atPath: schemaUrl.path) else {
-            assertionFailure("Table \(tableName) already exists")
+            print("Table \(tableName) already exists")
             return
         }
         
         guard let fields = query.objects as? [Field] else {
-            assertionFailure("Couldn't parse table fields")
+            print("Couldn't parse table fields")
             return
         }
         
@@ -63,7 +63,7 @@ class QueryExecutor {
 
     func dropTable(query: Query) {
         guard let tableNames = query.subjects as? [String] else {
-            assertionFailure("No table names provided to drop")
+            print("No table names provided to drop")
             return
         }
         
@@ -79,7 +79,7 @@ class QueryExecutor {
             
             guard manager.fileExists(atPath: fileUrl.path),
                   manager.fileExists(atPath: schemaUrl.path) else {
-                assertionFailure("Table \(tableName) doesn't exist")
+                print("Table \(tableName) doesn't exist")
                 return
             }
 
@@ -92,7 +92,18 @@ class QueryExecutor {
         }
     }
 
-    func listTables(query: Query) {
+    func listTables() {
+        do {
+            let names = try manager.contentsOfDirectory(atPath: baseUrl.path)
+            for name in names {
+                if !StringHelpers.stringContainsString(base: name, searched: "Schema"),
+                   name != ".DS_Store" {
+                    print(StringHelpers.removeCharactersFromEnd(string: name, count: 4))
+                }
+            }
+        } catch let error {
+            print(error.localizedDescription)
+        }
     }
 
     func tableInfo(query: Query) {

@@ -45,7 +45,7 @@ class CommandParser {
         var lastObject: Any
 
         guard let subject = tokens[0] as? String else {
-            assertionFailure("Couldn't parse object as String!")
+            print("Couldn't parse object as String!")
             return
         }
         
@@ -54,7 +54,7 @@ class CommandParser {
         var objects: [Any] = ArrayHelpers.removeFirstElement(array: tokens)
         
         guard objects[0] as? DBToken == .dbOpenBracket else {
-            assertionFailure("No opening bracket for table creation")
+            print("No opening bracket for table creation")
             return
         }
         lastObject = objects[0]
@@ -62,7 +62,7 @@ class CommandParser {
         
         if objects[0] as? DBToken == .dbCloseBracket ||
            objects[0] as? DBToken == .dbComma {
-            assertionFailure("Can't create an empty table")
+            print("Can't create an empty table")
             return
         }
         
@@ -80,7 +80,7 @@ class CommandParser {
                 if lastObject as? DBToken != .dbComma &&
                     lastObject as? DBToken != .dbOpenBracket &&
                     lastObject as? DBKeyword != .dbDefault {
-                    assertionFailure("Syntax error")
+                    print("Syntax error")
                     return
                 }
                 varName = object
@@ -89,14 +89,14 @@ class CommandParser {
             // Type descriptor - :
             if object as? DBToken == .dbTypeDescriptor,
                !(lastObject is String) {
-                assertionFailure("Types descriptors can only appear after a variable name")
+                print("Types descriptors can only appear after a variable name")
                 return
             }
             
             // Type
             if let object = object as? DBType  {
                 if lastObject as? DBToken != .dbTypeDescriptor {
-                    assertionFailure("Types can only appear after type descriptors")
+                    print("Types can only appear after type descriptors")
                     return
                 }
                 varType = object
@@ -105,14 +105,14 @@ class CommandParser {
             // Default keyword
             if object as? DBKeyword == .dbDefault,
                !(lastObject is DBType) {
-                assertionFailure("Default values can only appear after valid variables")
+                print("Default values can only appear after valid variables")
                 return
             }
 
             // Comma
             if object as? DBToken == .dbComma{
                 if !(lastObject is DBType) && !(lastObject is String) {
-                    assertionFailure("Commas can only appear after types and default values")
+                    print("Commas can only appear after types and default values")
                     return
                 }
 
@@ -123,7 +123,7 @@ class CommandParser {
             // Closing bracket
             if object as? DBToken == .dbCloseBracket {
                 if !(lastObject is DBType) && !(lastObject is String) {
-                    assertionFailure("Closing brackets can only appear after types and default values")
+                    print("Closing brackets can only appear after types and default values")
                     return
                 }
 
@@ -135,7 +135,7 @@ class CommandParser {
         }
         
         guard objects.last as? DBToken == .dbCloseBracket else {
-            assertionFailure("Can't contain anything after closing bracket")
+            print("Can't contain anything after closing bracket")
             return
         }
     }
@@ -153,7 +153,7 @@ class CommandParser {
             // Comma
             if token as? DBToken == .dbComma{
                 if !(lastToken is String) {
-                    assertionFailure("Commas can only appear after names")
+                    print("Commas can only appear after names")
                     return
                 }
             }
@@ -162,7 +162,7 @@ class CommandParser {
         }
         
         guard lastToken as? DBToken != .dbComma else {
-            assertionFailure("Cannot end drop statement on a comma")
+            print("Cannot end drop statement on a comma")
             return
         }
         

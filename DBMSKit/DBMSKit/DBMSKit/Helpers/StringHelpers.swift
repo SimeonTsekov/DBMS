@@ -55,6 +55,29 @@ class StringHelpers {
         return false
     }
 
+    static func stringContainsString(base: String, searched: String) -> Bool {
+        if searched.isEmpty {
+            return false
+        }
+        
+        let baseCharacters = Array(base)
+        let searchedCharacters = Array(searched)
+        var matched = 0
+        
+        for i in 0..<baseCharacters.count {
+            if baseCharacters[i] != searchedCharacters[matched] {
+                matched = 0
+            } else {
+                matched += 1
+                if matched == searched.count {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
+
     static func removeLastCharacter(string: String) -> String {
         var characters: [Character] = []
         var newString = ""
@@ -87,6 +110,17 @@ class StringHelpers {
             newString = removeLastCharacter(string: newString)
         }
         
+        return newString
+    }
+
+    static func removeCharactersFromEnd(string: String, count: Int) -> String {
+        let chars = Array(string)
+        var newString = ""
+
+        for i in 0..<(chars.count - count) {
+            newString.append(chars[i])
+        }
+
         return newString
     }
 }

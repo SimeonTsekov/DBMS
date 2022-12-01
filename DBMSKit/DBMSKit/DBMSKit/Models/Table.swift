@@ -118,7 +118,7 @@ struct Field: Codable {
         name = try values.decode(String.self, forKey: .name)
         let typeValue = try values.decode(String.self, forKey: .type)
         guard let dbType = DBType(rawValue: typeValue) else {
-            assertionFailure("Couldn't initialize type for \(name)")
+            print("Couldn't initialize type for \(name)")
             type = .dbString
             defaultValue = nil
             return

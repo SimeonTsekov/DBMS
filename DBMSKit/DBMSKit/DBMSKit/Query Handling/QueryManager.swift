@@ -33,7 +33,11 @@ class QueryManager {
             parser.parseDrop(with: arguments, for: query)
             executor.dropTable(query: query)
         case .dbList:
-            executor.listTables(query: query)
+            guard arguments.isEmpty else {
+                print("Can't have anything after LIST")
+                return
+            }
+            executor.listTables()
         case .dbInfo:
             executor.tableInfo(query: query)
         case .dbSelect:
