@@ -30,6 +30,7 @@ class QueryManager {
             parser.parseCreate(with: arguments, for: query)
             executor.createTable(query: query)
         case .dbDrop:
+            parser.parseDrop(with: arguments, for: query)
             executor.dropTable(query: query)
         case .dbList:
             executor.listTables(query: query)

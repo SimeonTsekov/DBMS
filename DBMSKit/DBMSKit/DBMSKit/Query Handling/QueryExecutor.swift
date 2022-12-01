@@ -23,7 +23,7 @@ class QueryExecutor {
         do {
             try manager.createDirectory(at: baseUrl, withIntermediateDirectories: true, attributes: nil)
         } catch let error {
-            print(error)
+            print(error.localizedDescription)
         }
     }
     
@@ -44,7 +44,7 @@ class QueryExecutor {
         
         guard !manager.fileExists(atPath: fileUrl.path),
               !manager.fileExists(atPath: schemaUrl.path) else {
-            assertionFailure("Table already exists")
+            assertionFailure("Table \(tableName) already exists")
             return
         }
         
@@ -62,6 +62,34 @@ class QueryExecutor {
     }
 
     func dropTable(query: Query) {
+        guard let tableNames = query.subjects as? [String] else {
+            assertionFailure("No table names provided to drop")
+            return
+        }
+        
+        for tableName in tableNames {
+            var fileUrl = baseUrl
+            var schemaUrl = baseUrl
+            
+            fileUrl.appendPathComponent(tableName)
+            fileUrl.appendPathExtension("bin")
+            
+            schemaUrl.appendPathComponent(tableName + "Schema")
+            schemaUrl.appendPathExtension("bin")
+            
+            guard manager.fileExists(atPath: fileUrl.path),
+                  manager.fileExists(atPath: schemaUrl.path) else {
+                assertionFailure("Table \(tableName) doesn't exist")
+                return
+            }
+
+            do {
+                try manager.removeItem(at: schemaUrl)
+                try manager.removeItem(at: fileUrl)
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }
     }
 
     func listTables(query: Query) {

@@ -139,4 +139,33 @@ class CommandParser {
             return
         }
     }
+    
+    func parseDrop(with tokens: [Any], for query: Query) {
+        var lastToken: Any = tokens[0]
+        var subjects: [String] = []
+
+        for token in tokens {
+            // Variable Name
+            if let subject = token as? String {
+                subjects.append(subject)
+            }
+            
+            // Comma
+            if token as? DBToken == .dbComma{
+                if !(lastToken is String) {
+                    assertionFailure("Commas can only appear after names")
+                    return
+                }
+            }
+            
+            lastToken = token
+        }
+        
+        guard lastToken as? DBToken != .dbComma else {
+            assertionFailure("Cannot end drop statement on a comma")
+            return
+        }
+        
+        query.subjects = subjects
+    }
 }
