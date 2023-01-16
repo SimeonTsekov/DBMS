@@ -42,6 +42,9 @@ class StringHelpers {
         if word != "" {
             tokens.append(word)
         }
+        if tokens[0] == "" {
+            tokens = ArrayHelpers.removeFirstElement(array: tokens)
+        }
         return tokens
     }
 
@@ -122,5 +125,41 @@ class StringHelpers {
         }
 
         return newString
+    }
+    
+    static func writeDataToString(string: String, row: Row) -> String {
+        var chars = Array(string)
+        
+        chars.removeAll { character in
+            String(character) == Constants.blankSpaceCharacter
+        }
+        
+        for value in row {
+            if value != "" {
+                chars.append(contentsOf: Array(value))
+            } else {
+                chars.append(Character(Constants.emptyValueCharacter))
+            }
+            chars.append(",")
+        }
+        
+        chars = ArrayHelpers.removeLastElement(array: chars)
+        chars.append(Character(Constants.rowSeparatorCharacter))
+        
+        for _ in (chars.count-1)..<(Constants.pageSize - 1) {
+            chars.append(Character(Constants.blankSpaceCharacter))
+        }
+        
+        return String(chars)
+    }
+
+    static func getRemainingSpace(string: String) -> Int {
+        var chars = Array(string)
+        
+        chars.removeAll { character in
+            String(character) != Constants.blankSpaceCharacter
+        }
+        
+        return chars.count
     }
 }

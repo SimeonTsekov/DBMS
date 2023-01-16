@@ -8,8 +8,8 @@
 import Foundation
 
 struct TableSchema: Codable {
-    let name: String
-    let fields: [Field]
+    var name: String
+    var fields: [Field]
 
     private enum CodingKeys: String, CodingKey {
         case name
@@ -71,10 +71,12 @@ struct TableData: Codable {
         var count = 0
         
         for page in pages {
-            count += page.values.count
+            count += page.values.filter({ value in
+                value != "0"
+            }).count
         }
 
-        return "Table has \(count) calues"
+        return "Table has \(count) values"
     }
 }
 
@@ -82,18 +84,32 @@ struct Page: Codable {
     let id: Int
     let previousId: Int
     let nextId: Int
-    let pageSize = 1000
-    let values: [String]
+    var values: String
 
     private enum CodingKeys: String, CodingKey {
         case id
         case previousId
         case nextId
-        case pageSize
         case values
     }
 
-    init(id: Int, previousId: Int, nextId: Int, values: [String]) {
+    init(string: String, id: Int) {
+        self.id = id
+        self.previousId = id - 1
+        self.nextId = id - 1
+        values = string
+        values.append(String(repeating: Character(Constants.blankSpaceCharacter), count: (Constants.pageSize - string.count)))
+    }
+
+    init(id: Int) {
+        self.id = id
+        values = String(repeating: Character(Constants.blankSpaceCharacter), count: Constants.pageSize)
+        nextId = id + 1
+
+        previousId = id == 0 ? id : (id - 1)
+    }
+    
+    init(id: Int, previousId: Int, nextId: Int, values: String) {
         self.id = id
         self.previousId = previousId
         self.nextId = nextId
@@ -105,7 +121,7 @@ struct Page: Codable {
         id = try decoderValues.decode(Int.self, forKey: .id)
         previousId = try decoderValues.decode(Int.self, forKey: .previousId)
         nextId = try decoderValues.decode(Int.self, forKey: .nextId)
-        values = try decoderValues.decode([String].self, forKey: .values)
+        values = try decoderValues.decode(String.self, forKey: .values)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -113,7 +129,6 @@ struct Page: Codable {
         try container.encode(id, forKey: .id)
         try container.encode(previousId, forKey: .previousId)
         try container.encode(nextId, forKey: .nextId)
-        try container.encode(pageSize, forKey: .pageSize)
         try container.encode(values, forKey: .values)
     }
 }
@@ -155,4 +170,13 @@ struct Field: Codable {
         try container.encode(type.rawValue, forKey: .type)
         try container.encode(defaultValue, forKey: .defaultValue)
     }
+}
+
+struct TableInsertScehma {
+    var name: String
+    var fields: [String]
+}
+
+struct TableValue {
+    var values: [String]
 }

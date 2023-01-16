@@ -192,4 +192,98 @@ class CommandParser {
 
         query.subject = tableName
     }
+    
+    func parseInsert(with tokens: [Any], for query: Query) {
+        guard !tokens.isEmpty else {
+            print("Must provide arguments")
+            return
+        }
+
+        var parsingMode: DBParseMode?
+        var table = TableInsertScehma(name: "", fields: [])
+        var value = TableValue(values: [])
+        var lastObject: Any
+
+        guard let keyword = tokens[0] as? DBKeyword,
+              keyword == .dbInto else {
+            print("Missing an INTO keyword")
+            return
+        }
+
+        query.subjects = []
+        lastObject = keyword
+        let queryTokens = ArrayHelpers.removeFirstElement(array: tokens)
+        
+        for token in queryTokens {
+            // Table name
+            if let subject = token as? String,
+               lastObject as? DBKeyword == .dbInto {
+                table.name = subject
+                parsingMode = .dbTable
+            }
+
+            // Open bracket
+            if token as? DBToken == .dbOpenBracket,
+               !(lastObject is String) && !(lastObject is DBToken) && !(lastObject is DBKeyword){
+                print("Opening bracket can only appear after table name and as a value opener")
+                return
+            }
+
+            // Field name
+            if let val = token as? String,
+               lastObject as? DBKeyword != .dbInto {
+                if lastObject as? DBToken != .dbComma &&
+                    lastObject as? DBToken != .dbOpenBracket {
+                    print("Syntax error")
+                    return
+                }
+                switch parsingMode {
+                case .dbTable:
+                    table.fields.append(val)
+                case .dbValue:
+                    value.values.append(val)
+                case .none:
+                    print("No query parsing mode available")
+                    return
+                }
+            }
+            
+            // Comma
+            if token as? DBToken == .dbComma,
+               !(lastObject is String) && lastObject as? DBToken != .dbCloseBracket {
+                print("Commas can only appear after field names and values")
+                return
+            }
+
+            // Close bracket
+            if token as? DBToken == .dbCloseBracket{
+               if !(lastObject is String) {
+                   print("Wrong table schema syntax")
+                   return
+               }
+
+                switch parsingMode {
+                case .dbTable:
+                    query.object = table
+                case .dbValue:
+                    query.subjects?.append(value)
+                    value.values = []
+                case .none:
+                    print("No query parsing mode available")
+                    return
+                }
+            }
+
+            // VALUES keyword
+            if token as? DBKeyword == .dbValues {
+                if lastObject as? DBToken != .dbCloseBracket {
+                    print("VALUES keyword can only appear after closing brackets")
+                    return
+                }
+                parsingMode = .dbValue
+            }
+
+            lastObject = token
+        }
+    }
 }

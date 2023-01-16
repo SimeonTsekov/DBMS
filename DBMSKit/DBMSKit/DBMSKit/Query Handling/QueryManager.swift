@@ -46,12 +46,13 @@ class QueryManager {
         case .dbDelete:
             executor.delete(query: query)
         case .dbInsert:
+            parser.parseInsert(with: arguments, for: query)
             executor.insert(query: query)
         case .dbCreateIndex:
             executor.createIndex(query: query)
         case .dbDropIndex:
             executor.dropIndex(query: query)
-        case .dbFrom, .dbWhere, .dbOrderBy, .dbDistinct, .dbValues, .dbDefault:
+        case .dbFrom, .dbWhere, .dbOrderBy, .dbDistinct, .dbValues, .dbDefault, .dbInto:
             return
         }
     }

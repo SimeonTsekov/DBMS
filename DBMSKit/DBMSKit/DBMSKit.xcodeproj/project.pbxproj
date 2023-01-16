@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC59886C29475E6D00D60E55 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC59886B29475E6D00D60E55 /* Constants.swift */; };
+		EC59886F2947612F00D60E55 /* FileManager+size.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC59886E2947612F00D60E55 /* FileManager+size.swift */; };
 		EC5B6BD329339BD7009670FD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5B6BD229339BD7009670FD /* main.swift */; };
 		EC5B6BDC2933B777009670FD /* ParsingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5B6BDB2933B777009670FD /* ParsingModels.swift */; };
 		EC5B6BE12933C58A009670FD /* StringHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5B6BE02933C58A009670FD /* StringHelpers.swift */; };
@@ -31,6 +33,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EC59886B29475E6D00D60E55 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		EC59886E2947612F00D60E55 /* FileManager+size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+size.swift"; sourceTree = "<group>"; };
 		EC5B6BCF29339BD7009670FD /* DBMSKit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DBMSKit; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC5B6BD229339BD7009670FD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		EC5B6BDB2933B777009670FD /* ParsingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsingModels.swift; sourceTree = "<group>"; };
@@ -63,6 +67,14 @@
 			path = "Query Handling";
 			sourceTree = "<group>";
 		};
+		EC59886D2947611600D60E55 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				EC59886E2947612F00D60E55 /* FileManager+size.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		EC5B6BC629339BD7009670FD = {
 			isa = PBXGroup;
 			children = (
@@ -82,6 +94,7 @@
 		EC5B6BD129339BD7009670FD /* DBMSKit */ = {
 			isa = PBXGroup;
 			children = (
+				EC59886D2947611600D60E55 /* Extensions */,
 				EC58440F2936422E000525A5 /* Query Handling */,
 				EC5B6BE92933D502009670FD /* Models */,
 				EC5B6BDF2933C575009670FD /* Helpers */,
@@ -105,6 +118,7 @@
 			children = (
 				EC5B6BE02933C58A009670FD /* StringHelpers.swift */,
 				EC5B6BE72933CFF3009670FD /* ArrayHelpers.swift */,
+				EC59886B29475E6D00D60E55 /* Constants.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -181,8 +195,10 @@
 				EC5B6BEB2934EB65009670FD /* Query.swift in Sources */,
 				EC5B6BE82933CFF3009670FD /* ArrayHelpers.swift in Sources */,
 				EC5B6BDC2933B777009670FD /* ParsingModels.swift in Sources */,
+				EC59886C29475E6D00D60E55 /* Constants.swift in Sources */,
 				EC5B6BD329339BD7009670FD /* main.swift in Sources */,
 				EC5B6BE32933CAB7009670FD /* CommandParser.swift in Sources */,
+				EC59886F2947612F00D60E55 /* FileManager+size.swift in Sources */,
 				EC5B6BE12933C58A009670FD /* StringHelpers.swift in Sources */,
 				ECA0613929366F6E00400ACA /* Table.swift in Sources */,
 			);

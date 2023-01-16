@@ -20,6 +20,7 @@ enum DBKeyword: String {
     case dbDistinct = "DISTINCT"
     case dbDelete = "DELETE"
     case dbInsert = "INSERT"
+    case dbInto = "INTO"
     case dbValues = "VALUES"
     case dbCreateIndex = "CREATE INDEX"
     case dbDropIndex = "DROP INDEX"
@@ -45,4 +46,9 @@ enum DBType: String {
     case dbInt = "int"
     case dbDate = "date"
     case dbString = "string"
+}
+
+enum DBParseMode {
+    case dbTable
+    case dbValue
 }

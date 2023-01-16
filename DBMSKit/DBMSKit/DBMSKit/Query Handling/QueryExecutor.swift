@@ -8,6 +8,8 @@
 import Foundation
 import System
 
+typealias Row = [String]
+
 class QueryExecutor {
     var baseUrl: URL = URL(fileURLWithPath: "")
     let manager = FileManager.default
@@ -54,7 +56,7 @@ class QueryExecutor {
             return
         }
         
-        let rootPage = Page(id: 1, previousId: 0, nextId: 2, values: [])
+        let rootPage = Page(id: 1)
         let tableSchema = TableSchema(name: tableName, fields: fields)
         let tableData = TableData(pages: [rootPage])
 
@@ -160,6 +162,113 @@ class QueryExecutor {
     }
 
     func insert(query: Query) {
+        var fileUrl = baseUrl
+        var schemaUrl = baseUrl
+        let jsonDecoder = JSONDecoder()
+        let jsonEncoder = JSONEncoder()
+        var newPage: Page?
+
+        guard let table = query.object as? TableInsertScehma else {
+            print("Wrong table name format")
+            return
+        }
+        
+        guard let rows = query.subjects as? [TableValue] else {
+            print("Couldn't parse values")
+            return
+        }
+        
+        let tableName = table.name
+        fileUrl.appendPathComponent(tableName)
+        fileUrl.appendPathExtension("bin")
+        
+        schemaUrl.appendPathComponent(tableName + "Schema")
+        schemaUrl.appendPathExtension("bin")
+        
+        guard manager.fileExists(atPath: fileUrl.path),
+              manager.fileExists(atPath: schemaUrl.path) else {
+            print("Table \(tableName) doesn't exist")
+            return
+        }
+
+        guard let schemaData = manager.contents(atPath: schemaUrl.path)else {
+            print("File \(tableName).bin is empty")
+            return
+        }
+        do {
+            let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
+            var tempRow: Row = []
+            var tempValue: String?
+            let fileDescriptor = FileHandle(forUpdatingAtPath: fileUrl.path)
+            
+            guard let dataSize = Int(exactly: manager.sizeOfFile(atPath: fileUrl.path) ?? 0) else {
+                print("Error when determining size")
+                return
+            }
+            var pageCount = dataSize/Constants.fullPageSize
+            
+            try fileDescriptor?.seek(toOffset: UInt64((Constants.pageOffset + (pageCount - 1) * Constants.fullPageSize)))
+            guard let pageData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
+                print("Could not read page data")
+                try fileDescriptor?.close()
+                return
+            }
+            var page = try jsonDecoder.decode(Page.self, from: pageData)
+            
+            for row in rows {
+                var rowSize = 0
+                for i in 0..<schema.fields.count {
+                    for j in 0..<table.fields.count {
+                        if schema.fields[i].name == table.fields[j] {
+                            tempValue = row.values[j]
+                            break
+                        }
+                        tempValue = nil
+                    }
+                    if let tempValue = tempValue {
+                        rowSize += tempValue.count + 1
+                        tempRow.append(tempValue)
+                    } else if let defValue = schema.fields[i].defaultValue {
+                        rowSize += defValue.count + 1
+                        tempRow.append(defValue)
+                    } else {
+                        rowSize += 2
+                        tempRow.append("")
+                    }
+                }
+                rowSize -= 1
+                let blankSpaces = StringHelpers.getRemainingSpace(string: page.values)
+                
+                if blankSpaces <= rowSize {
+                    var newPageData = try jsonEncoder.encode(page)
+                    newPageData.append(Data(",".utf8))
+                    try fileDescriptor?.seek(toOffset: UInt64((Constants.pageOffset + (pageCount - 1) * Constants.fullPageSize)))
+                    try fileDescriptor?.write(contentsOf: newPageData)
+                    newPage = Page(id: page.nextId)
+                    newPage!.values = StringHelpers.writeDataToString(string: newPage!.values, row: tempRow)
+                    page = newPage!
+                    pageCount += 1
+                } else {
+                    page.values = StringHelpers.writeDataToString(string: page.values, row: tempRow)
+                }
+                tempRow = []
+            }
+            
+            var newPageData = try jsonEncoder.encode(page)
+            if newPage != nil {
+                newPageData.append(Data("]}".utf8))
+                try fileDescriptor?.seek(toOffset: UInt64((Constants.pageOffset + (pageCount - 1) * Constants.fullPageSize) + 1))
+            } else {
+                try fileDescriptor?.seek(toOffset: UInt64((Constants.pageOffset + (pageCount - 1) * Constants.fullPageSize)))
+            }
+            try fileDescriptor?.write(contentsOf: newPageData)
+            if pageCount > 1 {
+                
+            }
+            try fileDescriptor?.close()
+        } catch let error {
+            print(error)
+        }
     }
 
     func createIndex(query: Query) {
