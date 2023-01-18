@@ -142,7 +142,7 @@ class QueryExecutor {
             return
         }
 
-        guard var remainigData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
+        guard var remainingData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
             print("Error when determining size")
             return
         }
@@ -158,7 +158,7 @@ class QueryExecutor {
         
         do {
             let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
-            while remainigData > Constants.fullPageSize {
+            while remainingData > Constants.fullPageSize {
                 let offset = UInt64((Constants.pageOffset + (currentPage - 1) * Constants.fullPageSize))
                 try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
                 
@@ -186,7 +186,7 @@ class QueryExecutor {
                 }
                 
                 currentPage += 1
-                remainigData -= Constants.fullPageSize
+                remainingData -= Constants.fullPageSize
             }
         } catch let error {
             print(error)
@@ -194,8 +194,6 @@ class QueryExecutor {
     }
 
     func delete(query: Query) {
-        let jsonEncoder = JSONEncoder()
-
         guard let tableName = query.object as? String else {
             print("Wrong table name format")
             return
@@ -206,7 +204,7 @@ class QueryExecutor {
             return
         }
 
-        guard var remainigData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
+        guard var remainingData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
             print("Error when determining size")
             return
         }
@@ -217,12 +215,14 @@ class QueryExecutor {
         }
         
         let jsonDecoder = JSONDecoder()
+        let jsonEncoder = JSONEncoder()
         let fileDescriptor = FileHandle(forUpdatingAtPath: fileTableInfo.dataURL.path)
+
         var currentPage = 1
         
         do {
             let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
-            while remainigData > Constants.fullPageSize {
+            while remainingData > Constants.fullPageSize {
                 let offset = UInt64((Constants.pageOffset + (currentPage - 1) * Constants.fullPageSize))
                 try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
                 
@@ -258,7 +258,7 @@ class QueryExecutor {
                 }
                 
                 currentPage += 1
-                remainigData -= Constants.fullPageSize
+                remainingData -= Constants.fullPageSize
             }
             try fileDescriptor?.close()
         } catch let error {
@@ -267,16 +267,12 @@ class QueryExecutor {
     }
 
     func insert(query: Query) {
-        let jsonDecoder = JSONDecoder()
-        let jsonEncoder = JSONEncoder()
-        var newPage: Page?
-
         guard let table = query.object as? TableInsertScehma else {
             print("Wrong table name format")
             return
         }
 
-        guard let rows = query.subjects as? [TableValue] else {
+        guard let rowsToInsert = query.subjects as? [TableValue] else {
             print("Couldn't parse values")
             return
         }
@@ -291,75 +287,76 @@ class QueryExecutor {
             print("File \(tableName).bin is empty")
             return
         }
+
+        guard var remainingData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
+            print("Error when determining size")
+            return
+        }
+
+        let jsonDecoder = JSONDecoder()
+        let jsonEncoder = JSONEncoder()
+        let fileDescriptor = FileHandle(forUpdatingAtPath: fileTableInfo.dataURL.path)
+
+        var currentPage = 1
+        var lastRow: Int? = 0
+
         do {
             let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
-            var tempRow: Row = []
-            var tempValue: String?
-            let fileDescriptor = FileHandle(forUpdatingAtPath: fileTableInfo.dataURL.path)
+            var done = false
             
-            guard let dataSize = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
-                print("Error when determining size")
-                return
-            }
-            var pageCount = dataSize/Constants.fullPageSize
-            
-            try fileDescriptor?.seek(toOffset: UInt64((Constants.pageOffset + (pageCount - 1) * Constants.fullPageSize)))
-            guard let pageData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
-                print("Could not read page data")
-                try fileDescriptor?.close()
-                return
-            }
-            var page = try jsonDecoder.decode(Page.self, from: pageData)
-            
-            for row in rows {
-                var rowSize = 0
-                for i in 0..<schema.fields.count {
-                    for j in 0..<table.fields.count {
-                        if schema.fields[i].name == table.fields[j] {
-                            tempValue = row.values[j]
-                            break
-                        }
-                        tempValue = nil
-                    }
-                    if let tempValue = tempValue {
-                        rowSize += tempValue.count + 1
-                        tempRow.append(tempValue)
-                    } else if let defValue = schema.fields[i].defaultValue {
-                        rowSize += defValue.count + 1
-                        tempRow.append(defValue)
+            while remainingData > Constants.fullPageSize {
+                let offset = UInt64((Constants.pageOffset + (currentPage - 1) * Constants.fullPageSize))
+                try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
+                
+                guard let pageBinaryData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
+                    print("Could not read page data")
+                    try fileDescriptor?.close()
+                    return
+                }
+                
+                var page = try jsonDecoder.decode(Page.self, from: pageBinaryData)
+                let controlValues = page.values
+                
+                for i in (lastRow ?? 0)..<rowsToInsert.count {
+                    let row = constructRow(tableSchema: schema, insertSchema: table, rowToInsert: rowsToInsert[i])
+                    let blankSpaces = helper.getRemainingSpace(string: page.values)
+                    
+                    if blankSpaces <= row.size {
+                        lastRow = i
+                        break
                     } else {
-                        rowSize += 2
-                        tempRow.append("")
+                        page.values = helper.writeDataToString(string: page.values, row: row.row)
                     }
+
+                    done = true
                 }
-                rowSize -= 1
-                let blankSpaces = helper.getRemainingSpace(string: page.values)
-                
-                if blankSpaces <= rowSize {
-                    var newPageData = try jsonEncoder.encode(page)
-                    newPageData.append(Data(",".utf8))
-                    try fileDescriptor?.seek(toOffset: UInt64((Constants.pageOffset + (pageCount - 1) * Constants.fullPageSize)))
+
+                if page.values != controlValues {
+                    let newPageData = try jsonEncoder.encode(page)
+                    try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
                     try fileDescriptor?.write(contentsOf: newPageData)
-                    newPage = Page(id: page.nextId)
-                    newPage!.values = helper.writeDataToString(string: newPage!.values, row: tempRow)
-                    page = newPage!
-                    pageCount += 1
-                } else {
-                    page.values = helper.writeDataToString(string: page.values, row: tempRow)
                 }
-                tempRow = []
-            }
-            
-            var newPageData = try jsonEncoder.encode(page)
-            if newPage != nil {
-                newPageData.append(Data("]}".utf8))
-                try fileDescriptor?.seek(toOffset: UInt64((Constants.pageOffset + (pageCount - 1) * Constants.fullPageSize) + 1))
-            } else {
-                try fileDescriptor?.seek(toOffset: UInt64((Constants.pageOffset + (pageCount - 1) * Constants.fullPageSize)))
-            }
-            try fileDescriptor?.write(contentsOf: newPageData)
-            if pageCount > 1 {
                 
+                if done {
+                    return
+                }
+
+                currentPage += 1
+                remainingData -= Constants.fullPageSize
+            }
+
+            if lastRow != nil {
+                var page = Page(id: currentPage)
+
+                for i in (lastRow ?? 0)..<rowsToInsert.count {
+                    let row = constructRow(tableSchema: schema, insertSchema: table, rowToInsert: rowsToInsert[i])
+                    page.values = helper.writeDataToString(string: page.values, row: row.row)
+                }
+                
+                var pageData = try jsonEncoder.encode(page)
+                pageData.append(Data("]}".utf8))
+                try fileDescriptor?.seek(toOffset: UInt64((Constants.pageOffset + (currentPage - 1) * Constants.fullPageSize) + 1))
+                try fileDescriptor?.write(contentsOf: pageData)
             }
             try fileDescriptor?.close()
         } catch let error {
@@ -391,5 +388,35 @@ class QueryExecutor {
         }
         
         return (dataUrl, schemaUrl)
+    }
+    
+    private func constructRow(tableSchema: TableSchema, insertSchema: TableInsertScehma, rowToInsert: TableValue) -> (row: Row, size: Int) {
+        var row: Row = []
+        var tempValue: String?
+        var rowSize = 0
+
+        for i in 0..<tableSchema.fields.count {
+            for j in 0..<insertSchema.fields.count {
+                if tableSchema.fields[i].name == insertSchema.fields[j] {
+                    tempValue = rowToInsert.values[j]
+                    break
+                }
+                tempValue = nil
+            }
+
+            if let tempValue = tempValue {
+                rowSize += tempValue.count + 1
+                row.append(tempValue)
+            } else if let defValue = tableSchema.fields[i].defaultValue {
+                rowSize += defValue.count + 1
+                row.append(defValue)
+            } else {
+                rowSize += 2
+                row.append("")
+            }
+        }
+        rowSize -= 1
+        
+        return (row, rowSize)
     }
 }
