@@ -71,14 +71,14 @@ class DBHelper {
         return rows
     }
     
-    func filterRowsByPredicate(rows: [TableRow], predicates: [Any]) -> [Row] {
+    func filterRowsByPredicate(rows: [TableRow], predicates: [Any], exclude: Bool = false) -> [Row] {
         var filteredRows: [Row] = []
         let replacedPredicates = replaceNamesWithValues(rows: rows, predicates: predicates)
         let logicalExpressions = resolveArithmeticPredicates(predicates: replacedPredicates)
         let results = resolveExpressions(predicates: logicalExpressions)
 
         for i in 0..<results.count {
-            if results[i] == true {
+            if results[i] == !exclude {
                 filteredRows.append(rows[i].toRow())
             }
         }

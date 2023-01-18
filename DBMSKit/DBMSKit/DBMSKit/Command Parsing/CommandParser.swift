@@ -333,4 +333,39 @@ class CommandParser {
             }
         }
     }
+    
+    func parseDelete(with tokens: [Any], for query: Query) {
+        guard !tokens.isEmpty else {
+            print("Must provide arguments")
+            return
+        }
+
+        var lastSubject: Any
+
+        guard let keyword = tokens[0] as? DBKeyword,
+              keyword == .dbFrom else {
+            print("Missing an INTO keyword")
+            return
+        }
+
+        query.subjects = []
+        query.predicates = []
+        lastSubject = keyword
+        let queryTokens = ArrayHelpers.removeFirstElement(array: tokens)
+        
+        for token in queryTokens {
+            // Table Name
+            if token is String,
+               lastSubject as? DBKeyword == .dbFrom {
+                query.object = token
+            }
+            
+            if lastSubject as? DBKeyword == .dbWhere {
+                query.predicates?.append(token)
+            } else {
+                lastSubject = token
+            }
+        }
+        return
+    }
 }

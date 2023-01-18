@@ -61,10 +61,3 @@ enum DBParseMode {
     case dbTable
     case dbValue
 }
-
-enum DBParsePhase: String {
-    case dbParenthess
-    case dbNot
-    case dbAnd
-    case dbOr
-}

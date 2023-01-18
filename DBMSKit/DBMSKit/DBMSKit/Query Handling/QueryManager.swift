@@ -45,6 +45,7 @@ class QueryManager {
             parser.parseSelect(with: arguments, for: query)
             executor.select(query: query)
         case .dbDelete:
+            parser.parseDelete(with: arguments, for: query)
             executor.delete(query: query)
         case .dbInsert:
             parser.parseInsert(with: arguments, for: query)

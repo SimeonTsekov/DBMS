@@ -194,6 +194,76 @@ class QueryExecutor {
     }
 
     func delete(query: Query) {
+        let jsonEncoder = JSONEncoder()
+
+        guard let tableName = query.object as? String else {
+            print("Wrong table name format")
+            return
+        }
+
+        guard let fileTableInfo = getTableFileInfo(for: tableName) else {
+            print("Couldn't construct URLs")
+            return
+        }
+
+        guard var remainigData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
+            print("Error when determining size")
+            return
+        }
+
+        guard let schemaData = manager.contents(atPath: fileTableInfo.schemaURL.path) else {
+            print("File \(fileTableInfo.schemaURL).bin is empty")
+            return
+        }
+        
+        let jsonDecoder = JSONDecoder()
+        let fileDescriptor = FileHandle(forUpdatingAtPath: fileTableInfo.dataURL.path)
+        var currentPage = 1
+        
+        do {
+            let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
+            while remainigData > Constants.fullPageSize {
+                let offset = UInt64((Constants.pageOffset + (currentPage - 1) * Constants.fullPageSize))
+                try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
+                
+                guard let pageBinaryData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
+                    print("Could not read page data")
+                    try fileDescriptor?.close()
+                    return
+                }
+                
+                let page = try jsonDecoder.decode(Page.self, from: pageBinaryData)
+                let pageData = helper.removeBlankSpaces(string: page.values)
+                var pageValues = StringHelpers.splitStringByCharacter(string: pageData, character: Character(Constants.rowSeparatorCharacter))
+                pageValues = ArrayHelpers.removeLastElement(array: pageValues)
+                let rows = helper.convertStringsToRows(strings: pageValues, schema: schema)
+                let filteredRows = helper.filterRowsByPredicate(rows: rows, predicates: query
+                    .predicates ?? [], exclude: true)
+                
+                if filteredRows.count != rows.count {
+                    var newData = ""
+                    for row in filteredRows {
+                        var rowRepresentation = ""
+                        for fieldProperty in row {
+                            rowRepresentation.append("\(fieldProperty),")
+                        }
+                        rowRepresentation = StringHelpers.removeLastCharacter(string: rowRepresentation)
+                        rowRepresentation.append(Character(Constants.rowSeparatorCharacter))
+                        newData.append(rowRepresentation)
+                    }
+                    let newPage = Page(string: newData, id: page.id)
+                    let newPageData = try jsonEncoder.encode(newPage)
+                    try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
+                    try fileDescriptor?.write(contentsOf: newPageData)
+                }
+                
+                currentPage += 1
+                remainigData -= Constants.fullPageSize
+            }
+            try fileDescriptor?.close()
+        } catch let error {
+            print(error)
+        }
     }
 
     func insert(query: Query) {
