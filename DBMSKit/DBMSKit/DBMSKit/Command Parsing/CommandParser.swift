@@ -286,4 +286,51 @@ class CommandParser {
             lastObject = token
         }
     }
+    
+    func parseSelect(with tokens: [Any], for query: Query) {
+        guard !tokens.isEmpty else {
+            print("Must provide arguments")
+            return
+        }
+
+        var lastSubject: Any?
+
+        query.subjects = []
+        query.predicates = []
+        
+        for token in tokens {
+            // Table or Field name
+            if let subject = token as? String,
+               !((lastSubject as? DBKeyword) == .dbWhere) {
+                if lastSubject as? DBKeyword == .dbFrom {
+                    query.object = subject
+                } else if lastSubject as? DBToken == .dbComma || lastSubject == nil {
+                    query.subjects?.append(subject)
+                } else {
+                    print("Syntax error")
+                    return
+                }
+            }
+            
+            // Comma
+            if token as? DBToken == .dbComma,
+               !(lastSubject is String) {
+                print("Commas can only appear after field names")
+                return
+            }
+
+            // From
+            if token as? DBKeyword == .dbFrom,
+               !(lastSubject is String) {
+                print("Please provide fields for selection")
+                return
+            }
+            
+            if lastSubject as? DBKeyword == .dbWhere {
+                query.predicates?.append(token)
+            } else {
+                lastSubject = token
+            }
+        }
+    }
 }

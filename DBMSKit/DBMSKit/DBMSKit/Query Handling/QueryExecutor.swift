@@ -9,10 +9,13 @@ import Foundation
 import System
 
 typealias Row = [String]
+typealias TableFileInfo = (dataURL: URL, schemaURL: URL)
+typealias Value = (value: String, type: DBType)
 
 class QueryExecutor {
     var baseUrl: URL = URL(fileURLWithPath: "")
     let manager = FileManager.default
+    let helper = DBHelper()
 
     init() {
         guard let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first else {
@@ -29,9 +32,8 @@ class QueryExecutor {
         }
     }
     
+    // MARK: Queries
     func createTable(query: Query) {
-        var fileUrl = baseUrl
-        var schemaUrl = baseUrl
         let jsonEncoder = JSONEncoder()
         
         guard let tableName = query.subject as? String else {
@@ -39,18 +41,11 @@ class QueryExecutor {
             return
         }
         
-        fileUrl.appendPathComponent(tableName)
-        fileUrl.appendPathExtension("bin")
-        
-        schemaUrl.appendPathComponent(tableName + "Schema")
-        schemaUrl.appendPathExtension("bin")
-        
-        guard !manager.fileExists(atPath: fileUrl.path),
-              !manager.fileExists(atPath: schemaUrl.path) else {
-            print("Table \(tableName) already exists")
+        guard let fileTableInfo = getTableFileInfo(for: tableName, shouldExist: false) else {
+            print("Couldn't construct URLs")
             return
         }
-        
+
         guard let fields = query.objects as? [Field] else {
             print("Couldn't parse table fields")
             return
@@ -64,8 +59,8 @@ class QueryExecutor {
             let schemaData = try jsonEncoder.encode(tableSchema)
             let tableJsonData = try jsonEncoder.encode(tableData)
 
-            manager.createFile(atPath: schemaUrl.path, contents: schemaData, attributes: nil)
-            manager.createFile(atPath: fileUrl.path, contents: tableJsonData, attributes: nil)
+            manager.createFile(atPath: fileTableInfo.schemaURL.path, contents: schemaData, attributes: nil)
+            manager.createFile(atPath: fileTableInfo.dataURL.path, contents: tableJsonData, attributes: nil)
         } catch let error {
             print(error.localizedDescription)
         }
@@ -78,24 +73,14 @@ class QueryExecutor {
         }
         
         for tableName in tableNames {
-            var fileUrl = baseUrl
-            var schemaUrl = baseUrl
-            
-            fileUrl.appendPathComponent(tableName)
-            fileUrl.appendPathExtension("bin")
-            
-            schemaUrl.appendPathComponent(tableName + "Schema")
-            schemaUrl.appendPathExtension("bin")
-            
-            guard manager.fileExists(atPath: fileUrl.path),
-                  manager.fileExists(atPath: schemaUrl.path) else {
-                print("Table \(tableName) doesn't exist")
+            guard let fileTableInfo = getTableFileInfo(for: tableName) else {
+                print("Couldn't construct URLs")
                 return
             }
 
             do {
-                try manager.removeItem(at: schemaUrl)
-                try manager.removeItem(at: fileUrl)
+                try manager.removeItem(at: fileTableInfo.schemaURL)
+                try manager.removeItem(at: fileTableInfo.dataURL)
             } catch let error {
                 print(error.localizedDescription)
             }
@@ -117,8 +102,6 @@ class QueryExecutor {
     }
 
     func tableInfo(query: Query) {
-        var fileUrl = baseUrl
-        var schemaUrl = baseUrl
         let jsonDecoder = JSONDecoder()
 
         guard let tableName = query.subject as? String else {
@@ -126,20 +109,13 @@ class QueryExecutor {
             return
         }
 
-        fileUrl.appendPathComponent(tableName)
-        fileUrl.appendPathExtension("bin")
-        
-        schemaUrl.appendPathComponent(tableName + "Schema")
-        schemaUrl.appendPathExtension("bin")
-        
-        guard manager.fileExists(atPath: fileUrl.path),
-              manager.fileExists(atPath: schemaUrl.path) else {
-            print("Table \(tableName) doesn't exist")
+        guard let fileTableInfo = getTableFileInfo(for: tableName) else {
+            print("Couldn't construct URLs")
             return
         }
 
-        guard let schemaData = manager.contents(atPath: schemaUrl.path),
-              let tableData = manager.contents(atPath: fileUrl.path) else {
+        guard let schemaData = manager.contents(atPath: fileTableInfo.schemaURL.path),
+              let tableData = manager.contents(atPath: fileTableInfo.dataURL.path) else {
             print("File \(tableName).bin is empty")
             return
         }
@@ -156,14 +132,71 @@ class QueryExecutor {
     }
 
     func select(query: Query) {
+        guard let tableName = query.object as? String else {
+            print("Wrong table name format")
+            return
+        }
+
+        guard let fileTableInfo = getTableFileInfo(for: tableName) else {
+            print("Couldn't construct URLs")
+            return
+        }
+
+        guard var remainigData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
+            print("Error when determining size")
+            return
+        }
+
+        guard let schemaData = manager.contents(atPath: fileTableInfo.schemaURL.path) else {
+            print("File \(fileTableInfo.schemaURL).bin is empty")
+            return
+        }
+        
+        let jsonDecoder = JSONDecoder()
+        let fileDescriptor = FileHandle(forUpdatingAtPath: fileTableInfo.dataURL.path)
+        var currentPage = 1
+        
+        do {
+            let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
+            while remainigData > Constants.fullPageSize {
+                let offset = UInt64((Constants.pageOffset + (currentPage - 1) * Constants.fullPageSize))
+                try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
+                
+                guard let pageBinaryData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
+                    print("Could not read page data")
+                    try fileDescriptor?.close()
+                    return
+                }
+                
+                let page = try jsonDecoder.decode(Page.self, from: pageBinaryData)
+                let pageData = helper.removeBlankSpaces(string: page.values)
+                var pageValues = StringHelpers.splitStringByCharacter(string: pageData, character: Character(Constants.rowSeparatorCharacter))
+                pageValues = ArrayHelpers.removeLastElement(array: pageValues)
+                let rows = helper.convertStringsToRows(strings: pageValues, schema: schema)
+                let filteredRows = helper.filterRowsByPredicate(rows: rows, predicates: query
+                    .predicates ?? [])
+                
+                for row in filteredRows {
+                    var rowRepresentation = ""
+                    for fieldProperty in row {
+                        rowRepresentation.append("\(fieldProperty), ")
+                    }
+                    rowRepresentation = StringHelpers.removeCharactersFromEnd(string: rowRepresentation, count: 2)
+                    print("\(rowRepresentation)\n")
+                }
+                
+                currentPage += 1
+                remainigData -= Constants.fullPageSize
+            }
+        } catch let error {
+            print(error)
+        }
     }
 
     func delete(query: Query) {
     }
 
     func insert(query: Query) {
-        var fileUrl = baseUrl
-        var schemaUrl = baseUrl
         let jsonDecoder = JSONDecoder()
         let jsonEncoder = JSONEncoder()
         var newPage: Page?
@@ -172,26 +205,19 @@ class QueryExecutor {
             print("Wrong table name format")
             return
         }
-        
+
         guard let rows = query.subjects as? [TableValue] else {
             print("Couldn't parse values")
             return
         }
-        
+
         let tableName = table.name
-        fileUrl.appendPathComponent(tableName)
-        fileUrl.appendPathExtension("bin")
-        
-        schemaUrl.appendPathComponent(tableName + "Schema")
-        schemaUrl.appendPathExtension("bin")
-        
-        guard manager.fileExists(atPath: fileUrl.path),
-              manager.fileExists(atPath: schemaUrl.path) else {
-            print("Table \(tableName) doesn't exist")
+        guard let fileTableInfo = getTableFileInfo(for: tableName) else {
+            print("Couldn't construct URLs")
             return
         }
 
-        guard let schemaData = manager.contents(atPath: schemaUrl.path)else {
+        guard let schemaData = manager.contents(atPath: fileTableInfo.schemaURL.path)else {
             print("File \(tableName).bin is empty")
             return
         }
@@ -199,9 +225,9 @@ class QueryExecutor {
             let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
             var tempRow: Row = []
             var tempValue: String?
-            let fileDescriptor = FileHandle(forUpdatingAtPath: fileUrl.path)
+            let fileDescriptor = FileHandle(forUpdatingAtPath: fileTableInfo.dataURL.path)
             
-            guard let dataSize = Int(exactly: manager.sizeOfFile(atPath: fileUrl.path) ?? 0) else {
+            guard let dataSize = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
                 print("Error when determining size")
                 return
             }
@@ -237,7 +263,7 @@ class QueryExecutor {
                     }
                 }
                 rowSize -= 1
-                let blankSpaces = StringHelpers.getRemainingSpace(string: page.values)
+                let blankSpaces = helper.getRemainingSpace(string: page.values)
                 
                 if blankSpaces <= rowSize {
                     var newPageData = try jsonEncoder.encode(page)
@@ -245,11 +271,11 @@ class QueryExecutor {
                     try fileDescriptor?.seek(toOffset: UInt64((Constants.pageOffset + (pageCount - 1) * Constants.fullPageSize)))
                     try fileDescriptor?.write(contentsOf: newPageData)
                     newPage = Page(id: page.nextId)
-                    newPage!.values = StringHelpers.writeDataToString(string: newPage!.values, row: tempRow)
+                    newPage!.values = helper.writeDataToString(string: newPage!.values, row: tempRow)
                     page = newPage!
                     pageCount += 1
                 } else {
-                    page.values = StringHelpers.writeDataToString(string: page.values, row: tempRow)
+                    page.values = helper.writeDataToString(string: page.values, row: tempRow)
                 }
                 tempRow = []
             }
@@ -275,5 +301,25 @@ class QueryExecutor {
     }
 
     func dropIndex(query: Query) {
+    }
+
+    // MARK: Private
+    private func getTableFileInfo(for name: String, shouldExist: Bool = true) -> TableFileInfo? {
+        var dataUrl = baseUrl
+        var schemaUrl = baseUrl
+        
+        dataUrl.appendPathComponent(name)
+        dataUrl.appendPathExtension("bin")
+        
+        schemaUrl.appendPathComponent(name + "Schema")
+        schemaUrl.appendPathExtension("bin")
+        
+        guard manager.fileExists(atPath: dataUrl.path) == shouldExist,
+              manager.fileExists(atPath: schemaUrl.path) == shouldExist else {
+            print("Table \(name) doesn't exist")
+            return nil
+        }
+        
+        return (dataUrl, schemaUrl)
     }
 }

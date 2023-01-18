@@ -40,6 +40,15 @@ enum DBToken: String {
     case dbGreater = ">"
     case dbTypeDescriptor = ":"
     case dbComma = ","
+    
+    var isArithmeticOperator: Bool {
+        switch self {
+        case .dbAnd, .dbOr, .dbNot, .dbOpenBracket, .dbCloseBracket, .dbTypeDescriptor, .dbComma:
+            return false
+        case .dbEqual, .dbLessOrEqual, .dbGreaterOrEqual, .dbNotEqual, .dbLesser, .dbGreater:
+            return true
+        }
+    }
 }
 
 enum DBType: String {
@@ -51,4 +60,11 @@ enum DBType: String {
 enum DBParseMode {
     case dbTable
     case dbValue
+}
+
+enum DBParsePhase: String {
+    case dbParenthess
+    case dbNot
+    case dbAnd
+    case dbOr
 }

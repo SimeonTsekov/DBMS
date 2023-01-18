@@ -7,6 +7,8 @@
 
 import Foundation
 
+typealias TableRowProperty = (name: String, value: String, type: DBType)
+
 struct TableSchema: Codable {
     var name: String
     var fields: [Field]
@@ -179,4 +181,18 @@ struct TableInsertScehma {
 
 struct TableValue {
     var values: [String]
+}
+
+struct TableRow {
+    var properties: [TableRowProperty] = []
+
+    func toRow() -> Row {
+        var row: Row = []
+        
+        for property in properties {
+            row.append(property.value)
+        }
+        
+        return row
+    }
 }

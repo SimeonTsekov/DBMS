@@ -13,6 +13,7 @@ class Query {
     var subjects: [Any]?
     var object: Any?
     var objects: [Any]?
+    var predicates: [Any]?
     
     init(method: DBKeyword) {
         self.method = method

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC55AC152976CAAA00975DD3 /* DBHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC55AC142976CAAA00975DD3 /* DBHelpers.swift */; };
 		EC59886C29475E6D00D60E55 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC59886B29475E6D00D60E55 /* Constants.swift */; };
 		EC59886F2947612F00D60E55 /* FileManager+size.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC59886E2947612F00D60E55 /* FileManager+size.swift */; };
 		EC5B6BD329339BD7009670FD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5B6BD229339BD7009670FD /* main.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EC55AC142976CAAA00975DD3 /* DBHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBHelpers.swift; sourceTree = "<group>"; };
 		EC59886B29475E6D00D60E55 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EC59886E2947612F00D60E55 /* FileManager+size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+size.swift"; sourceTree = "<group>"; };
 		EC5B6BCF29339BD7009670FD /* DBMSKit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DBMSKit; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,6 +120,7 @@
 			children = (
 				EC5B6BE02933C58A009670FD /* StringHelpers.swift */,
 				EC5B6BE72933CFF3009670FD /* ArrayHelpers.swift */,
+				EC55AC142976CAAA00975DD3 /* DBHelpers.swift */,
 				EC59886B29475E6D00D60E55 /* Constants.swift */,
 			);
 			path = Helpers;
@@ -197,6 +200,7 @@
 				EC5B6BDC2933B777009670FD /* ParsingModels.swift in Sources */,
 				EC59886C29475E6D00D60E55 /* Constants.swift in Sources */,
 				EC5B6BD329339BD7009670FD /* main.swift in Sources */,
+				EC55AC152976CAAA00975DD3 /* DBHelpers.swift in Sources */,
 				EC5B6BE32933CAB7009670FD /* CommandParser.swift in Sources */,
 				EC59886F2947612F00D60E55 /* FileManager+size.swift in Sources */,
 				EC5B6BE12933C58A009670FD /* StringHelpers.swift in Sources */,
