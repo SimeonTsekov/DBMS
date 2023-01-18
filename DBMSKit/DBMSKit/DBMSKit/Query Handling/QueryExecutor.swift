@@ -155,6 +155,7 @@ class QueryExecutor {
         let jsonDecoder = JSONDecoder()
         let fileDescriptor = FileHandle(forUpdatingAtPath: fileTableInfo.dataURL.path)
         var currentPage = 1
+        var filteredRows: [TableRow] = []
         
         do {
             let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
@@ -173,20 +174,30 @@ class QueryExecutor {
                 var pageValues = StringHelpers.splitStringByCharacter(string: pageData, character: Character(Constants.rowSeparatorCharacter))
                 pageValues = ArrayHelpers.removeLastElement(array: pageValues)
                 let rows = helper.convertStringsToRows(strings: pageValues, schema: schema)
-                let filteredRows = helper.filterRowsByPredicate(rows: rows, predicates: query
+                filteredRows = helper.filterRowsByPredicate(rows: rows, predicates: query
                     .predicates ?? [])
-                
-                for row in filteredRows {
-                    var rowRepresentation = ""
-                    for fieldProperty in row {
-                        rowRepresentation.append("\(fieldProperty), ")
-                    }
-                    rowRepresentation = StringHelpers.removeCharactersFromEnd(string: rowRepresentation, count: 2)
-                    print("\(rowRepresentation)\n")
-                }
-                
+
                 currentPage += 1
                 remainingData -= Constants.fullPageSize
+            }
+            
+            if query.distinctSelection {
+                filteredRows = ArrayHelpers.removeRepeatingOccurences(array: filteredRows)
+            }
+
+            if let orderFactor = query.orderFactor {
+                filteredRows.quickSort(factor: orderFactor)
+            }
+
+            for row in filteredRows {
+                var stringRepresentation = ""
+                for property in row.properties {
+                    if let subjects = query.subjects as? [String],
+                       subjects.contains(property.name) {
+                        stringRepresentation.append("\(property.value) ")
+                    }
+                }
+                print(stringRepresentation)
             }
         } catch let error {
             print(error)
@@ -244,7 +255,7 @@ class QueryExecutor {
                     var newData = ""
                     for row in filteredRows {
                         var rowRepresentation = ""
-                        for fieldProperty in row {
+                        for fieldProperty in row.toRow() {
                             rowRepresentation.append("\(fieldProperty),")
                         }
                         rowRepresentation = StringHelpers.removeLastCharacter(string: rowRepresentation)

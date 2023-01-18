@@ -183,7 +183,11 @@ struct TableValue {
     var values: [String]
 }
 
-struct TableRow {
+struct TableRow: Equatable {
+    static func == (lhs: TableRow, rhs: TableRow) -> Bool {
+        return lhs.toRow() == rhs.toRow()
+    }
+    
     var properties: [TableRowProperty] = []
 
     func toRow() -> Row {

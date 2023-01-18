@@ -16,7 +16,7 @@ enum DBKeyword: String {
     case dbSelect = "SELECT"
     case dbFrom = "FROM"
     case dbWhere = "WHERE"
-    case dbOrderBy = "ORDER BY"
+    case dbOrderBy = "ORDER"
     case dbDistinct = "DISTINCT"
     case dbDelete = "DELETE"
     case dbInsert = "INSERT"

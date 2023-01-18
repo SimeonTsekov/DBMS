@@ -14,6 +14,8 @@ class Query {
     var object: Any?
     var objects: [Any]?
     var predicates: [Any]?
+    var distinctSelection = false
+    var orderFactor: String?
     
     init(method: DBKeyword) {
         self.method = method

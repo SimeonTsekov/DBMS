@@ -299,13 +299,21 @@ class CommandParser {
         query.predicates = []
         
         for token in tokens {
+            // DISTINCT
+            if token as? DBKeyword == .dbDistinct,
+               lastSubject == nil  {
+                query.distinctSelection = true
+            }
+
             // Table or Field name
             if let subject = token as? String,
                !((lastSubject as? DBKeyword) == .dbWhere) {
                 if lastSubject as? DBKeyword == .dbFrom {
                     query.object = subject
-                } else if lastSubject as? DBToken == .dbComma || lastSubject == nil {
+                } else if lastSubject as? DBToken == .dbComma || lastSubject as? DBKeyword == .dbDistinct || lastSubject == nil {
                     query.subjects?.append(subject)
+                } else if lastSubject as? DBKeyword == .dbOrderBy {
+                    query.orderFactor = subject
                 } else {
                     print("Syntax error")
                     return
@@ -326,7 +334,9 @@ class CommandParser {
                 return
             }
             
-            if lastSubject as? DBKeyword == .dbWhere {
+            if token as? DBKeyword == .dbOrderBy {
+                lastSubject = token
+            } else if lastSubject as? DBKeyword == .dbWhere {
                 query.predicates?.append(token)
             } else {
                 lastSubject = token
