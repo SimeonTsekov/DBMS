@@ -16,14 +16,15 @@ enum DBKeyword: String {
     case dbSelect = "SELECT"
     case dbFrom = "FROM"
     case dbWhere = "WHERE"
-    case dbOrderBy = "ORDER"
+    case dbOrderBy = "ORDERBY"
     case dbDistinct = "DISTINCT"
     case dbDelete = "DELETE"
     case dbInsert = "INSERT"
     case dbInto = "INTO"
     case dbValues = "VALUES"
-    case dbCreateIndex = "CREATE INDEX"
-    case dbDropIndex = "DROP INDEX"
+    case dbCreateIndex = "CREATEINDEX"
+    case dbDropIndex = "DROPINDEX"
+    case dbOn = "ON"
 }
 
 enum DBToken: String {

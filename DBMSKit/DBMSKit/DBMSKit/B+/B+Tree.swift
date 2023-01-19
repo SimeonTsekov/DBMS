@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BPlusTree {
+final class BPlusTree: Codable {
     let m: Int
     var root: InternalNode?
     var firstLeaf: LeafNode?
@@ -19,9 +19,29 @@ class BPlusTree {
     var midPoint: Int {
         return Int((m + 1) / 2) - 1
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case m
+        case root
+        case firstLeaf
+    }
     
     init(m: Int) {
         self.m = m
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        m = try values.decode(Int.self, forKey: .m)
+        root = try values.decode(InternalNode.self, forKey: .root)
+        firstLeaf = try values.decode(LeafNode.self, forKey: .firstLeaf)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(m, forKey: .m)
+        try container.encode(root, forKey: .root)
+        try container.encode(firstLeaf, forKey: .firstLeaf)
     }
     
     // MARK: Public
@@ -78,13 +98,6 @@ class BPlusTree {
             node === leafNode
         }) ?? 0) + 1
         leafNode.parent?.insertChildNode(node: newLeafNode, index: nodeIndex)
-        
-        newLeafNode.rightSibling = leafNode.rightSibling
-        if newLeafNode.rightSibling != nil {
-            newLeafNode.rightSibling?.leftSibling = newLeafNode
-        }
-        leafNode.rightSibling = newLeafNode
-        newLeafNode.leftSibling = leafNode
         
         guard root != nil else {
             root = leafNode.parent
@@ -158,13 +171,6 @@ class BPlusTree {
         for halfNode in halfNodes {
             halfNode.parent = sibling
         }
-        
-        sibling.rightSibling = internalNode.rightSibling
-        if let rightSibling = sibling.rightSibling {
-            rightSibling.leftSibling = sibling
-        }
-        internalNode.rightSibling = sibling
-        sibling.leftSibling = internalNode
         
         guard let parent = parent else {
             let keys = [newParentKey]

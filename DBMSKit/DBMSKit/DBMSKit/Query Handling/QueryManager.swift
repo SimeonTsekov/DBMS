@@ -51,10 +51,12 @@ class QueryManager {
             parser.parseInsert(with: arguments, for: query)
             executor.insert(query: query)
         case .dbCreateIndex:
+            parser.parseCreateIndex(with: arguments, for: query)
             executor.createIndex(query: query)
         case .dbDropIndex:
+            parser.parseDrop(with: arguments, for: query)
             executor.dropIndex(query: query)
-        case .dbFrom, .dbWhere, .dbOrderBy, .dbDistinct, .dbValues, .dbDefault, .dbInto:
+        case .dbFrom, .dbWhere, .dbOrderBy, .dbDistinct, .dbValues, .dbDefault, .dbInto, .dbOn:
             return
         }
     }

@@ -378,4 +378,44 @@ class CommandParser {
         }
         return
     }
+    
+    func parseCreateIndex(with tokens: [Any], for query: Query) {
+        guard !tokens.isEmpty else {
+            print("Must provide arguments")
+            return
+        }
+
+        var lastObject: Any? = nil
+        query.objects = []
+        
+        for token in tokens {
+            // Index name
+            if let subject = token as? String,
+               lastObject == nil {
+                query.subject = subject
+            }
+
+            // Open bracket
+            if token as? DBToken == .dbOpenBracket,
+               !(lastObject is String) {
+                print("Opening bracket can only appear after table name")
+                return
+            }
+
+            // Field name
+            if let val = token as? String,
+                lastObject != nil {
+                query.objects?.append(val)
+            }
+
+            // Close bracket
+            if token as? DBToken == .dbCloseBracket,
+               !(lastObject is String) {
+                print("Wrong table schema syntax")
+                return
+            }
+
+            lastObject = token
+        }
+    }
 }

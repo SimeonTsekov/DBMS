@@ -376,9 +376,107 @@ class QueryExecutor {
     }
 
     func createIndex(query: Query) {
+        guard let tableName = query.objects?[0] as? String else {
+            print("Wrong table name format")
+            return
+        }
+
+        guard let indexField = query.objects?[1] as? String else {
+            print("Wrong index field name format")
+            return
+        }
+
+        guard let indexName = query.subject as? String else {
+            print("Wrong index name format")
+            return
+        }
+
+        guard let fileTableInfo = getTableFileInfo(for: tableName) else {
+            print("Couldn't construct URLs")
+            return
+        }
+
+        guard var remainingData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
+            print("Error when determining size")
+            return
+        }
+
+        guard let schemaData = manager.contents(atPath: fileTableInfo.schemaURL.path) else {
+            print("File \(fileTableInfo.schemaURL).bin is empty")
+            return
+        }
+        
+        let jsonDecoder = JSONDecoder()
+        let jsonEncoder = JSONEncoder()
+        let fileDescriptor = FileHandle(forUpdatingAtPath: fileTableInfo.dataURL.path)
+        var fields: [DictionaryPair] = []
+        var currentPage = 1
+        
+        do {
+            let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
+            while remainingData > Constants.fullPageSize {
+                let offset = UInt64((Constants.pageOffset + (currentPage - 1) * Constants.fullPageSize))
+                try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
+                
+                guard let pageBinaryData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
+                    print("Could not read page data")
+                    try fileDescriptor?.close()
+                    return
+                }
+                
+                let page = try jsonDecoder.decode(Page.self, from: pageBinaryData)
+                let pageData = helper.removeBlankSpaces(string: page.values)
+                var pageValues = StringHelpers.splitStringByCharacter(string: pageData, character: Character(Constants.rowSeparatorCharacter))
+                pageValues = ArrayHelpers.removeLastElement(array: pageValues)
+                let rows = helper.convertStringsToRows(strings: pageValues, schema: schema)
+
+                var count = 0
+                for row in rows {
+                    guard let key = row.properties.first(where: { property in
+                        property.name == indexField
+                    })?.value else {
+                        print("Couldn,t get row value for indexed column")
+                        return
+                    }
+                    fields.append(DictionaryPair(key: key, value: Adress(page: currentPage, row: count)))
+                    count += 1
+                }
+
+                currentPage += 1
+                remainingData -= Constants.fullPageSize
+            }
+            
+            var indexUrl = baseUrl
+            indexUrl.appendPathComponent("\(indexName)_\(tableName)_\(indexField)")
+            indexUrl.appendPathExtension("bin")
+            let tree = constructBPTree(for: fields)
+
+            let indexTreeData = try jsonEncoder.encode(tree)
+            manager.createFile(atPath: indexUrl.path, contents: indexTreeData, attributes: nil)
+            print("Extracted")
+        } catch let error {
+            print(error)
+        }
     }
 
     func dropIndex(query: Query) {
+        guard let indexNames = query.subjects as? [String] else {
+            print("No index names provided to drop")
+            return
+        }
+        
+        for indexName in indexNames {
+            do {
+                let fileURLs = try FileManager.default.contentsOfDirectory(at: baseUrl, includingPropertiesForKeys: nil)
+                for fileurl in fileURLs {
+                    if fileurl.absoluteString.contains(indexName) {
+                        try manager.removeItem(at: fileurl)
+                    }
+                }
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }
     }
 
     // MARK: Private
@@ -429,5 +527,13 @@ class QueryExecutor {
         rowSize -= 1
         
         return (row, rowSize)
+    }
+    
+    private func constructBPTree(for fields: [DictionaryPair]) -> BPlusTree {
+        let tree = BPlusTree(m: 3) // I'm setting it to 3 for the sake of demonstration
+        for field in fields {
+            tree.insert(key: field.key, value: field.value)
+        }
+        return tree
     }
 }

@@ -15,14 +15,21 @@ class Node {
     }
 }
 
-class InternalNode: Node {
+final class InternalNode: Node, Codable {
     let maxDegree: Int
     let minDegree: Int
     var degree: Int
-    var leftSibling: InternalNode?
-    var rightSibling: InternalNode?
     var keys: [String] = []
     var childNodes: [Node] = []
+    
+    private enum CodingKeys: String, CodingKey {
+        case maxDegree
+        case minDegree
+        case degree
+        case keys
+        case childNodes
+        case parent
+    }
     
     var isDeficient: Bool {
         return degree < minDegree
@@ -38,6 +45,35 @@ class InternalNode: Node {
     
     var isOverfull: Bool {
         return degree == maxDegree + 1
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        maxDegree = try values.decode(Int.self, forKey: .maxDegree)
+        minDegree = try values.decode(Int.self, forKey: .minDegree)
+        degree = try values.decode(Int.self, forKey: .degree)
+        keys = try values.decode([String].self, forKey: .keys)
+        if childNodes[0] is LeafNode {
+            childNodes = try values.decode([LeafNode].self, forKey: .childNodes)
+        } else {
+            childNodes = try values.decode([InternalNode].self, forKey: .childNodes)
+        }
+        super.init(parent: nil)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(maxDegree, forKey: .maxDegree)
+        try container.encode(minDegree, forKey: .minDegree)
+        try container.encode(degree, forKey: .degree)
+        try container.encode(keys, forKey: .keys)
+        if childNodes[0] is LeafNode {
+            try container.encode(childNodes as! [LeafNode], forKey: .childNodes)
+        } else {
+            try container.encode(childNodes as! [InternalNode], forKey: .childNodes)
+        }
+        parent = nil
+        try container.encode(parent, forKey: .parent)
     }
     
     init(m: Int, keys: [String], parent: InternalNode?) {
