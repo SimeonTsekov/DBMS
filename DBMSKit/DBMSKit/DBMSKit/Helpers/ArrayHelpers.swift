@@ -28,6 +28,16 @@ class ArrayHelpers {
         return new
     }
 
+    static func removeLastFewElements<T>(array: [T], count: Int) -> [T] {
+        var new: [T] = []
+        
+        for i in 0..<(array.count - count) {
+            new.append(array[i])
+        }
+        
+        return new
+    }
+
     static func removeRepeatingOccurences<T: Equatable>(array: [T]) -> [T] {
         var unique: [T] = []
         
