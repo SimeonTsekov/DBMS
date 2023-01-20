@@ -11,6 +11,7 @@ final class BPlusTree: Codable {
     let m: Int
     var root: InternalNode?
     var firstLeaf: LeafNode?
+    var height: Int = 0
     
     var isEmpty: Bool {
         return firstLeaf == nil
@@ -24,6 +25,7 @@ final class BPlusTree: Codable {
         case m
         case root
         case firstLeaf
+        case height
     }
     
     init(m: Int) {
@@ -33,6 +35,7 @@ final class BPlusTree: Codable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         m = try values.decode(Int.self, forKey: .m)
+        height = try values.decode(Int.self, forKey: .height)
         root = try values.decode(InternalNode.self, forKey: .root)
         firstLeaf = try values.decode(LeafNode.self, forKey: .firstLeaf)
     }
@@ -40,13 +43,17 @@ final class BPlusTree: Codable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(m, forKey: .m)
+        root?.height = height
+        root?.depth = 0
         try container.encode(root, forKey: .root)
         try container.encode(firstLeaf, forKey: .firstLeaf)
+        try container.encode(height, forKey: .height)
     }
     
     // MARK: Public
     
     func search(key: String) -> [DictionaryPair]? {
+        height = 0
         if (isEmpty) {
             return nil
         }
@@ -144,6 +151,7 @@ final class BPlusTree: Codable {
         if let childLeaf = child as? LeafNode {
             return childLeaf
         } else if let childInternal = child as? InternalNode {
+            height += 1
             return findLeafNode(node: childInternal, key)
         }
         
