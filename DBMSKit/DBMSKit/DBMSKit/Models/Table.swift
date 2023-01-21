@@ -86,13 +86,19 @@ struct Page: Codable {
     let id: Int
     let previousId: Int
     let nextId: Int
-    var values: String
+    var hash: UInt64 = 0
+    var values: String {
+        didSet{
+            hash = StringHelpers.sdbmHash(str: values)
+        }
+    }
 
     private enum CodingKeys: String, CodingKey {
         case id
         case previousId
         case nextId
         case values
+        case hash
     }
 
     init(string: String, id: Int) {
@@ -101,13 +107,14 @@ struct Page: Codable {
         self.nextId = id - 1
         values = string
         values.append(String(repeating: Character(Constants.blankSpaceCharacter), count: (Constants.pageSize - string.count)))
+        hash = StringHelpers.sdbmHash(str: values)
     }
 
     init(id: Int) {
         self.id = id
         values = String(repeating: Character(Constants.blankSpaceCharacter), count: Constants.pageSize)
         nextId = id + 1
-
+        hash = StringHelpers.sdbmHash(str: values)
         previousId = id == 0 ? id : (id - 1)
     }
     
@@ -116,6 +123,7 @@ struct Page: Codable {
         self.previousId = previousId
         self.nextId = nextId
         self.values = values
+        hash = StringHelpers.sdbmHash(str: values)
     }
 
     init(from decoder: Decoder) throws {
@@ -124,6 +132,12 @@ struct Page: Codable {
         previousId = try decoderValues.decode(Int.self, forKey: .previousId)
         nextId = try decoderValues.decode(Int.self, forKey: .nextId)
         values = try decoderValues.decode(String.self, forKey: .values)
+        hash = try decoderValues.decode(UInt64.self, forKey: .hash)
+        let calculatedHash = StringHelpers.sdbmHash(str: values)
+        guard hash == calculatedHash else {
+            assertionFailure("Corrupt data!!!")
+            return
+        }
     }
 
     func encode(to encoder: Encoder) throws {
@@ -131,6 +145,7 @@ struct Page: Codable {
         try container.encode(id, forKey: .id)
         try container.encode(previousId, forKey: .previousId)
         try container.encode(nextId, forKey: .nextId)
+        try container.encode(hash, forKey: .hash)
         try container.encode(values, forKey: .values)
     }
 }

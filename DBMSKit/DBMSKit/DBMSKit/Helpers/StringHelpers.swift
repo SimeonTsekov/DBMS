@@ -126,4 +126,15 @@ class StringHelpers {
 
         return newString
     }
+    
+    static func sdbmHash(str: String) -> UInt64 {
+        var hash: UInt64 = 0
+        let characters = Array(str)
+
+        for i in 0..<str.count {
+            hash = UInt64(characters[i].asciiValue ?? 0) &+ (hash << 6) &+ (hash << 16) &- hash
+        }
+
+        return hash
+    }
 }

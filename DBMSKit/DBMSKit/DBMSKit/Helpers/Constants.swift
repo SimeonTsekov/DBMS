@@ -9,7 +9,7 @@ import Foundation
 
 class Constants {
     static let pageOffset = 10
-    static let fullPageSize = 1070
+    static let fullPageSize = 1097
     static let pageSize = 1024
     static let rowSeparatorCharacter = "$"
     static let emptyValueCharacter = "_"
