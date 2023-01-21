@@ -1,0 +1,630 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EC4C2B9A297C5C4000FED53F /* DBMSKit in Frameworks */ = {isa = PBXBuildFile; productRef = EC4C2B99297C5C4000FED53F /* DBMSKit */; };
+		ECB8E203297C427A0044F6E7 /* DBMSExplorerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8E202297C427A0044F6E7 /* DBMSExplorerApp.swift */; };
+		ECB8E205297C427A0044F6E7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8E204297C427A0044F6E7 /* ContentView.swift */; };
+		ECB8E207297C427B0044F6E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECB8E206297C427B0044F6E7 /* Assets.xcassets */; };
+		ECB8E20A297C427B0044F6E7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECB8E209297C427B0044F6E7 /* Preview Assets.xcassets */; };
+		ECB8E214297C427B0044F6E7 /* DBMSExplorerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8E213297C427B0044F6E7 /* DBMSExplorerTests.swift */; };
+		ECB8E21E297C427B0044F6E7 /* DBMSExplorerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8E21D297C427B0044F6E7 /* DBMSExplorerUITests.swift */; };
+		ECB8E220297C427B0044F6E7 /* DBMSExplorerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8E21F297C427B0044F6E7 /* DBMSExplorerUITestsLaunchTests.swift */; };
+		ECB8E22E297C46560044F6E7 /* TablesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8E22D297C46560044F6E7 /* TablesScreen.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		ECB8E210297C427B0044F6E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ECB8E1F7297C427A0044F6E7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB8E1FE297C427A0044F6E7;
+			remoteInfo = DBMSExplorer;
+		};
+		ECB8E21A297C427B0044F6E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ECB8E1F7297C427A0044F6E7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB8E1FE297C427A0044F6E7;
+			remoteInfo = DBMSExplorer;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		EC2EB633297C5B3C0004BCB6 /* DBMSKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DBMSKit; sourceTree = "<group>"; };
+		ECB8E1FF297C427A0044F6E7 /* DBMSExplorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DBMSExplorer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECB8E202297C427A0044F6E7 /* DBMSExplorerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBMSExplorerApp.swift; sourceTree = "<group>"; };
+		ECB8E204297C427A0044F6E7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		ECB8E206297C427B0044F6E7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		ECB8E209297C427B0044F6E7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		ECB8E20F297C427B0044F6E7 /* DBMSExplorerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DBMSExplorerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECB8E213297C427B0044F6E7 /* DBMSExplorerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBMSExplorerTests.swift; sourceTree = "<group>"; };
+		ECB8E219297C427B0044F6E7 /* DBMSExplorerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DBMSExplorerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECB8E21D297C427B0044F6E7 /* DBMSExplorerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBMSExplorerUITests.swift; sourceTree = "<group>"; };
+		ECB8E21F297C427B0044F6E7 /* DBMSExplorerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBMSExplorerUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		ECB8E22D297C46560044F6E7 /* TablesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TablesScreen.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ECB8E1FC297C427A0044F6E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC4C2B9A297C5C4000FED53F /* DBMSKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB8E20C297C427B0044F6E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB8E216297C427B0044F6E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EC2EB632297C5AAC0004BCB6 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				EC2EB633297C5B3C0004BCB6 /* DBMSKit */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		EC4C2B98297C5C4000FED53F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		ECB8E1F6297C427A0044F6E7 = {
+			isa = PBXGroup;
+			children = (
+				EC2EB632297C5AAC0004BCB6 /* Packages */,
+				ECB8E201297C427A0044F6E7 /* DBMSExplorer */,
+				ECB8E212297C427B0044F6E7 /* DBMSExplorerTests */,
+				ECB8E21C297C427B0044F6E7 /* DBMSExplorerUITests */,
+				ECB8E200297C427A0044F6E7 /* Products */,
+				EC4C2B98297C5C4000FED53F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		ECB8E200297C427A0044F6E7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ECB8E1FF297C427A0044F6E7 /* DBMSExplorer.app */,
+				ECB8E20F297C427B0044F6E7 /* DBMSExplorerTests.xctest */,
+				ECB8E219297C427B0044F6E7 /* DBMSExplorerUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ECB8E201297C427A0044F6E7 /* DBMSExplorer */ = {
+			isa = PBXGroup;
+			children = (
+				ECB8E22C297C46430044F6E7 /* View */,
+				ECB8E202297C427A0044F6E7 /* DBMSExplorerApp.swift */,
+				ECB8E204297C427A0044F6E7 /* ContentView.swift */,
+				ECB8E206297C427B0044F6E7 /* Assets.xcassets */,
+				ECB8E208297C427B0044F6E7 /* Preview Content */,
+			);
+			path = DBMSExplorer;
+			sourceTree = "<group>";
+		};
+		ECB8E208297C427B0044F6E7 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				ECB8E209297C427B0044F6E7 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		ECB8E212297C427B0044F6E7 /* DBMSExplorerTests */ = {
+			isa = PBXGroup;
+			children = (
+				ECB8E213297C427B0044F6E7 /* DBMSExplorerTests.swift */,
+			);
+			path = DBMSExplorerTests;
+			sourceTree = "<group>";
+		};
+		ECB8E21C297C427B0044F6E7 /* DBMSExplorerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				ECB8E21D297C427B0044F6E7 /* DBMSExplorerUITests.swift */,
+				ECB8E21F297C427B0044F6E7 /* DBMSExplorerUITestsLaunchTests.swift */,
+			);
+			path = DBMSExplorerUITests;
+			sourceTree = "<group>";
+		};
+		ECB8E22C297C46430044F6E7 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				ECB8E22D297C46560044F6E7 /* TablesScreen.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		ECB8E1FE297C427A0044F6E7 /* DBMSExplorer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECB8E223297C427B0044F6E7 /* Build configuration list for PBXNativeTarget "DBMSExplorer" */;
+			buildPhases = (
+				ECB8E1FB297C427A0044F6E7 /* Sources */,
+				ECB8E1FC297C427A0044F6E7 /* Frameworks */,
+				ECB8E1FD297C427A0044F6E7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DBMSExplorer;
+			packageProductDependencies = (
+				EC4C2B99297C5C4000FED53F /* DBMSKit */,
+			);
+			productName = DBMSExplorer;
+			productReference = ECB8E1FF297C427A0044F6E7 /* DBMSExplorer.app */;
+			productType = "com.apple.product-type.application";
+		};
+		ECB8E20E297C427B0044F6E7 /* DBMSExplorerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECB8E226297C427B0044F6E7 /* Build configuration list for PBXNativeTarget "DBMSExplorerTests" */;
+			buildPhases = (
+				ECB8E20B297C427B0044F6E7 /* Sources */,
+				ECB8E20C297C427B0044F6E7 /* Frameworks */,
+				ECB8E20D297C427B0044F6E7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECB8E211297C427B0044F6E7 /* PBXTargetDependency */,
+			);
+			name = DBMSExplorerTests;
+			productName = DBMSExplorerTests;
+			productReference = ECB8E20F297C427B0044F6E7 /* DBMSExplorerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		ECB8E218297C427B0044F6E7 /* DBMSExplorerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECB8E229297C427B0044F6E7 /* Build configuration list for PBXNativeTarget "DBMSExplorerUITests" */;
+			buildPhases = (
+				ECB8E215297C427B0044F6E7 /* Sources */,
+				ECB8E216297C427B0044F6E7 /* Frameworks */,
+				ECB8E217297C427B0044F6E7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECB8E21B297C427B0044F6E7 /* PBXTargetDependency */,
+			);
+			name = DBMSExplorerUITests;
+			productName = DBMSExplorerUITests;
+			productReference = ECB8E219297C427B0044F6E7 /* DBMSExplorerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ECB8E1F7297C427A0044F6E7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1330;
+				LastUpgradeCheck = 1330;
+				TargetAttributes = {
+					ECB8E1FE297C427A0044F6E7 = {
+						CreatedOnToolsVersion = 13.3;
+					};
+					ECB8E20E297C427B0044F6E7 = {
+						CreatedOnToolsVersion = 13.3;
+						TestTargetID = ECB8E1FE297C427A0044F6E7;
+					};
+					ECB8E218297C427B0044F6E7 = {
+						CreatedOnToolsVersion = 13.3;
+						TestTargetID = ECB8E1FE297C427A0044F6E7;
+					};
+				};
+			};
+			buildConfigurationList = ECB8E1FA297C427A0044F6E7 /* Build configuration list for PBXProject "DBMSExplorer" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = ECB8E1F6297C427A0044F6E7;
+			productRefGroup = ECB8E200297C427A0044F6E7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ECB8E1FE297C427A0044F6E7 /* DBMSExplorer */,
+				ECB8E20E297C427B0044F6E7 /* DBMSExplorerTests */,
+				ECB8E218297C427B0044F6E7 /* DBMSExplorerUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		ECB8E1FD297C427A0044F6E7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB8E20A297C427B0044F6E7 /* Preview Assets.xcassets in Resources */,
+				ECB8E207297C427B0044F6E7 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB8E20D297C427B0044F6E7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB8E217297C427B0044F6E7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		ECB8E1FB297C427A0044F6E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB8E22E297C46560044F6E7 /* TablesScreen.swift in Sources */,
+				ECB8E205297C427A0044F6E7 /* ContentView.swift in Sources */,
+				ECB8E203297C427A0044F6E7 /* DBMSExplorerApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB8E20B297C427B0044F6E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB8E214297C427B0044F6E7 /* DBMSExplorerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB8E215297C427B0044F6E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB8E21E297C427B0044F6E7 /* DBMSExplorerUITests.swift in Sources */,
+				ECB8E220297C427B0044F6E7 /* DBMSExplorerUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		ECB8E211297C427B0044F6E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB8E1FE297C427A0044F6E7 /* DBMSExplorer */;
+			targetProxy = ECB8E210297C427B0044F6E7 /* PBXContainerItemProxy */;
+		};
+		ECB8E21B297C427B0044F6E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB8E1FE297C427A0044F6E7 /* DBMSExplorer */;
+			targetProxy = ECB8E21A297C427B0044F6E7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		ECB8E221297C427B0044F6E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		ECB8E222297C427B0044F6E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		ECB8E224297C427B0044F6E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"DBMSExplorer/Preview Content\"";
+				DEVELOPMENT_TEAM = 7352ZCGRRF;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SimeonTsekov.DBMSExplorer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ECB8E225297C427B0044F6E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"DBMSExplorer/Preview Content\"";
+				DEVELOPMENT_TEAM = 7352ZCGRRF;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SimeonTsekov.DBMSExplorer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		ECB8E227297C427B0044F6E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7352ZCGRRF;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SimeonTsekov.DBMSExplorerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DBMSExplorer.app/DBMSExplorer";
+			};
+			name = Debug;
+		};
+		ECB8E228297C427B0044F6E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7352ZCGRRF;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SimeonTsekov.DBMSExplorerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DBMSExplorer.app/DBMSExplorer";
+			};
+			name = Release;
+		};
+		ECB8E22A297C427B0044F6E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7352ZCGRRF;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SimeonTsekov.DBMSExplorerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DBMSExplorer;
+			};
+			name = Debug;
+		};
+		ECB8E22B297C427B0044F6E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7352ZCGRRF;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SimeonTsekov.DBMSExplorerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DBMSExplorer;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ECB8E1FA297C427A0044F6E7 /* Build configuration list for PBXProject "DBMSExplorer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECB8E221297C427B0044F6E7 /* Debug */,
+				ECB8E222297C427B0044F6E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECB8E223297C427B0044F6E7 /* Build configuration list for PBXNativeTarget "DBMSExplorer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECB8E224297C427B0044F6E7 /* Debug */,
+				ECB8E225297C427B0044F6E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECB8E226297C427B0044F6E7 /* Build configuration list for PBXNativeTarget "DBMSExplorerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECB8E227297C427B0044F6E7 /* Debug */,
+				ECB8E228297C427B0044F6E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECB8E229297C427B0044F6E7 /* Build configuration list for PBXNativeTarget "DBMSExplorerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECB8E22A297C427B0044F6E7 /* Debug */,
+				ECB8E22B297C427B0044F6E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EC4C2B99297C5C4000FED53F /* DBMSKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DBMSKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = ECB8E1F7297C427A0044F6E7 /* Project object */;
+}
