@@ -9,33 +9,33 @@ import Foundation
 
 typealias TableRowProperty = (name: String, value: String, type: DBType)
 
-struct TableSchema: Codable {
-    var name: String
-    var fields: [Field]
+public struct TableSchema: Codable {
+    public var name: String
+    public var fields: [Field]
 
     private enum CodingKeys: String, CodingKey {
         case name
         case fields
     }
     
-    init(name: String, fields: [Field]) {
+    public init(name: String, fields: [Field]) {
         self.name = name
         self.fields = fields
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         name = try values.decode(String.self, forKey: .name)
         fields = try values.decode([Field].self, forKey: .fields)
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
         try container.encode(fields, forKey: .fields)
     }
 
-    func toString() -> String {
+    public func toString() -> String {
         var string = "Name: \(name)\n"
         for field in fields {
             string.append("\t field: \(field.name):\(field.type.rawValue)")
@@ -69,7 +69,7 @@ struct TableData: Codable {
         try container.encode(pages, forKey: .pages)
     }
 
-    func toString() -> String {
+    public func toString() -> String {
         var count = 0
         
         for page in pages {
@@ -86,7 +86,7 @@ struct Page: Codable {
     let id: Int
     let previousId: Int
     let nextId: Int
-    var hash: UInt64 = 0
+    var hash: UInt16 = 0
     var values: String {
         didSet{
             hash = StringHelpers.sdbmHash(str: values)
@@ -132,7 +132,7 @@ struct Page: Codable {
         previousId = try decoderValues.decode(Int.self, forKey: .previousId)
         nextId = try decoderValues.decode(Int.self, forKey: .nextId)
         values = try decoderValues.decode(String.self, forKey: .values)
-        hash = try decoderValues.decode(UInt64.self, forKey: .hash)
+        hash = try decoderValues.decode(UInt16.self, forKey: .hash)
         let calculatedHash = StringHelpers.sdbmHash(str: values)
         guard hash == calculatedHash else {
             assertionFailure("Corrupt data!!!")
@@ -150,10 +150,11 @@ struct Page: Codable {
     }
 }
 
-struct Field: Codable {
-    let name: String
-    let type: DBType
-    let defaultValue: String?
+public struct Field: Codable, Identifiable {
+    public let id = UUID()
+    public let name: String
+    public let type: DBType
+    public let defaultValue: String?
 
     private enum CodingKeys: String, CodingKey {
         case name
@@ -161,13 +162,13 @@ struct Field: Codable {
         case defaultValue
     }
 
-    init(name: String, type: DBType, defaultValue: String?) {
+    public init(name: String, type: DBType, defaultValue: String?) {
         self.name = name
         self.type = type
         self.defaultValue = defaultValue
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         name = try values.decode(String.self, forKey: .name)
         let typeValue = try values.decode(String.self, forKey: .type)
@@ -181,7 +182,7 @@ struct Field: Codable {
         defaultValue = try values.decodeIfPresent(String.self, forKey: .defaultValue)
     }
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
         try container.encode(type.rawValue, forKey: .type)
@@ -198,8 +199,10 @@ struct TableValue {
     var values: [String]
 }
 
-struct TableRow: Equatable {
-    static func == (lhs: TableRow, rhs: TableRow) -> Bool {
+public struct TableRow: Equatable, Identifiable {
+    public var id = UUID()
+    
+    public static func == (lhs: TableRow, rhs: TableRow) -> Bool {
         return lhs.toRow() == rhs.toRow()
     }
     
@@ -213,5 +216,14 @@ struct TableRow: Equatable {
         }
         
         return row
+    }
+    
+    public func toString() -> String {
+        var string = ""
+        for property in properties {
+            string.append("\(property.value), ")
+        }
+        string.removeLast(2)
+        return string
     }
 }

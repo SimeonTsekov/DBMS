@@ -8,19 +8,38 @@
 import SwiftUI
 
 struct TablesScreen: View {
+    @ObservedObject private var tablesViewModel: TablesViewModel
     let title: String
     
+    init(title: String, tablesViewModel: TablesViewModel) {
+        self.title = title
+        self.tablesViewModel = tablesViewModel
+    }
+    
     var body: some View {
-        List {
-            ForEach(1...10, id: \.self) { index in
-                Text("Table \(index)")
+        NavigationView {
+            List{
+                ForEach(tablesViewModel.tables) { table in
+                    NavigationLink(table.name, destination: TableScreen(tableViewModel: TableViewModel(tableName: table.name, manager: tablesViewModel.manager)))
+                        .foregroundColor(Color.primary.opacity(0.75))
+                }
+                .onDelete(perform: deleteItem)
             }
-            .onDelete(perform: deleteItem)
+            .onAppear {
+                tablesViewModel.getTableData()
+            }
+            .navigationTitle(title)
+            .toolbar {
+                Button {
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
         }
-        .navigationTitle(title)
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     private func deleteItem(at index: IndexSet) {
-        print(index)
+        tablesViewModel.dropTable(at: index)
     }
 }

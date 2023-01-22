@@ -33,22 +33,19 @@ class QueryExecutor {
     }
     
     // MARK: Queries
-    func createTable(query: Query) {
+    func createTable(query: Query) -> String {
         let jsonEncoder = JSONEncoder()
         
         guard let tableName = query.subject as? String else {
-            print("Wrong table name format")
-            return
+            return "Wrong table name format"
         }
         
         guard let fileTableInfo = getTableFileInfo(for: tableName, shouldExist: false) else {
-            print("Couldn't construct URLs")
-            return
+            return "Couldn't construct URLs"
         }
         
         guard let fields = query.objects as? [Field] else {
-            print("Couldn't parse table fields")
-            return
+            return "Couldn't parse table fields"
         }
         
         let rootPage = Page(id: 1)
@@ -61,101 +58,106 @@ class QueryExecutor {
             
             manager.createFile(atPath: fileTableInfo.schemaURL.path, contents: schemaData, attributes: nil)
             manager.createFile(atPath: fileTableInfo.dataURL.path, contents: tableJsonData, attributes: nil)
+            return "Table \(tableName) successfully created"
         } catch let error {
-            print(error.localizedDescription)
+            return error.localizedDescription
         }
+        return "Creation of table \(tableName) failed"
     }
     
-    func dropTable(query: Query) {
+    func dropTable(query: Query) -> String {
         guard let tableNames = query.subjects as? [String] else {
-            print("No table names provided to drop")
-            return
+            return "No table names provided to drop"
         }
         
         for tableName in tableNames {
             guard let fileTableInfo = getTableFileInfo(for: tableName) else {
-                print("Couldn't construct URLs")
-                return
+                return "Couldn't construct URLs"
             }
             
             do {
                 try manager.removeItem(at: fileTableInfo.schemaURL)
                 try manager.removeItem(at: fileTableInfo.dataURL)
             } catch let error {
-                print(error.localizedDescription)
+                return error.localizedDescription
             }
         }
+        
+        return "Table deletion successfull"
     }
     
-    func listTables() {
+    func listTables() -> [String] {
+        var tables: [String] = []
         do {
             let names = try manager.contentsOfDirectory(atPath: baseUrl.path)
             for name in names {
                 if !StringHelpers.stringContainsString(base: name, searched: "Schema"),
+                   !StringHelpers.stringContainsString(base: name, searched: "_"),
                    name != ".DS_Store" {
-                    print(StringHelpers.removeCharactersFromEnd(string: name, count: 4))
+                    tables.append(StringHelpers.removeCharactersFromEnd(string: name, count: 4))
                 }
             }
         } catch let error {
-            print(error.localizedDescription)
+            return [error.localizedDescription]
         }
+        return tables
     }
     
-    func tableInfo(query: Query) {
+    func tableInfo(query: Query) -> TableSchema? {
         let jsonDecoder = JSONDecoder()
         
         guard let tableName = query.subject as? String else {
             print("Wrong table name format")
-            return
+            return nil
         }
         
         guard let fileTableInfo = getTableFileInfo(for: tableName) else {
             print("Couldn't construct URLs")
-            return
+            return nil
         }
         
         guard let schemaData = manager.contents(atPath: fileTableInfo.schemaURL.path),
               let tableData = manager.contents(atPath: fileTableInfo.dataURL.path) else {
             print("File \(tableName).bin is empty")
-            return
+            return nil
         }
         do {
             let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
             let data = try jsonDecoder.decode(TableData.self, from: tableData)
             
-            print(schema.toString())
-            print(data.toString())
-            print("Data is \(tableData.count) bytes\n")
+            return schema
         } catch let error {
             print(error.localizedDescription)
         }
+        return nil
     }
     
-    func select(query: Query) {
+    func select(query: Query) -> Any? {
         guard let tableName = query.object as? String else {
             print("Wrong table name format")
-            return
+            return nil
         }
         
         guard let fileTableInfo = getTableFileInfo(for: tableName) else {
             print("Couldn't construct URLs")
-            return
+            return nil
         }
         
         guard var remainingData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
             print("Error when determining size")
-            return
+            return nil
         }
         
         guard let schemaData = manager.contents(atPath: fileTableInfo.schemaURL.path) else {
             print("File \(fileTableInfo.schemaURL).bin is empty")
-            return
+            return nil
         }
         
         let jsonDecoder = JSONDecoder()
         let fileDescriptor = FileHandle(forUpdatingAtPath: fileTableInfo.dataURL.path)
         var currentPage = 1
         var filteredRows: [TableRow] = []
+        var fields: [String] = []
         
         do {
             let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
@@ -175,7 +177,7 @@ class QueryExecutor {
                         guard let pageBinaryData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
                             print("Could not read page data")
                             try fileDescriptor?.close()
-                            return
+                            return []
                         }
                         
                         page = try jsonDecoder.decode(Page.self, from: pageBinaryData)
@@ -195,9 +197,10 @@ class QueryExecutor {
                             stringRepresentation.append("\(property.value) ")
                         }
                     }
+                    fields.append(stringRepresentation)
                     print(stringRepresentation)
                 }
-                return
+                return fields
             }
             
             while remainingData > Constants.fullPageSize {
@@ -207,7 +210,7 @@ class QueryExecutor {
                 guard let pageBinaryData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
                     print("Could not read page data")
                     try fileDescriptor?.close()
-                    return
+                    return []
                 }
                 
                 let page = try jsonDecoder.decode(Page.self, from: pageBinaryData)
@@ -215,8 +218,12 @@ class QueryExecutor {
                 var pageValues = StringHelpers.splitStringByCharacter(string: pageData, character: Character(Constants.rowSeparatorCharacter))
                 pageValues = ArrayHelpers.removeLastElement(array: pageValues)
                 let rows = helper.convertStringsToRows(strings: pageValues, schema: schema)
-                filteredRows = helper.filterRowsByPredicate(rows: rows, predicates: query
-                    .predicates ?? [])
+                if !(query.predicates?.isEmpty ?? true) {
+                    filteredRows = helper.filterRowsByPredicate(rows: rows, predicates: query
+                        .predicates ?? [])
+                } else {
+                    filteredRows = rows
+                }
                 
                 currentPage += 1
                 remainingData -= Constants.fullPageSize
@@ -230,6 +237,10 @@ class QueryExecutor {
                 filteredRows.quickSort(factor: orderFactor)
             }
             
+            if query.subjects?[0] as? String == "*" {
+                return filteredRows
+            }
+            
             for row in filteredRows {
                 var stringRepresentation = ""
                 for property in row.properties {
@@ -238,32 +249,31 @@ class QueryExecutor {
                         stringRepresentation.append("\(property.value) ")
                     }
                 }
-                print(stringRepresentation)
+                fields.append(stringRepresentation)
             }
+            return fields
         } catch let error {
-            print(error)
+            return error.localizedDescription
         }
+        
+        return fields
     }
     
-    func delete(query: Query) {
+    func delete(query: Query) -> String {
         guard let tableName = query.object as? String else {
-            print("Wrong table name format")
-            return
+            return "Wrong table name format"
         }
         
         guard let fileTableInfo = getTableFileInfo(for: tableName) else {
-            print("Couldn't construct URLs")
-            return
+            return "Couldn't construct URLs"
         }
         
         guard var remainingData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
-            print("Error when determining size")
-            return
+            return "Error when determining size"
         }
         
         guard let schemaData = manager.contents(atPath: fileTableInfo.schemaURL.path) else {
-            print("File \(fileTableInfo.schemaURL).bin is empty")
-            return
+            return "File \(fileTableInfo.schemaURL).bin is empty"
         }
         
         let jsonDecoder = JSONDecoder()
@@ -279,9 +289,8 @@ class QueryExecutor {
                 try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
                 
                 guard let pageBinaryData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
-                    print("Could not read page data")
                     try fileDescriptor?.close()
-                    return
+                    return "Could not read page data"
                 }
                 
                 let page = try jsonDecoder.decode(Page.self, from: pageBinaryData)
@@ -313,36 +322,33 @@ class QueryExecutor {
                 remainingData -= Constants.fullPageSize
             }
             try fileDescriptor?.close()
+            return "Row deletion successful"
         } catch let error {
-            print(error)
+            return error.localizedDescription
         }
+        return "Row deletion failed"
     }
     
-    func insert(query: Query) {
+    func insert(query: Query) -> String {
         guard let table = query.object as? TableInsertScehma else {
-            print("Wrong table name format")
-            return
+            return "Wrong table name format"
         }
         
         guard let rowsToInsert = query.subjects as? [TableValue] else {
-            print("Couldn't parse values")
-            return
+            return "Couldn't parse values"
         }
         
         let tableName = table.name
         guard let fileTableInfo = getTableFileInfo(for: tableName) else {
-            print("Couldn't construct URLs")
-            return
+            return "Couldn't construct URLs"
         }
         
         guard let schemaData = manager.contents(atPath: fileTableInfo.schemaURL.path)else {
-            print("File \(tableName).bin is empty")
-            return
+            return "File \(tableName).bin is empty"
         }
         
         guard var remainingData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
-            print("Error when determining size")
-            return
+            return "Error when determining size"
         }
         
         let jsonDecoder = JSONDecoder()
@@ -361,9 +367,8 @@ class QueryExecutor {
                 try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
                 
                 guard let pageBinaryData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
-                    print("Could not read page data")
                     try fileDescriptor?.close()
-                    return
+                    return "Could not read page data"
                 }
                 
                 var page = try jsonDecoder.decode(Page.self, from: pageBinaryData)
@@ -390,7 +395,8 @@ class QueryExecutor {
                 }
                 
                 if done {
-                    return
+                    try fileDescriptor?.close()
+                    return "Insertion successful"
                 }
                 
                 currentPage += 1
@@ -411,40 +417,35 @@ class QueryExecutor {
                 try fileDescriptor?.write(contentsOf: pageData)
             }
             try fileDescriptor?.close()
-        } catch let error {
-            print(error)
+            return "Insertion successful"
+        }  catch let error {
+            return error.localizedDescription
         }
     }
     
-    func createIndex(query: Query) {
+    func createIndex(query: Query) -> String {
         guard let tableName = query.objects?[0] as? String else {
-            print("Wrong table name format")
-            return
+            return "Wrong table name format"
         }
         
         guard let indexField = query.objects?[1] as? String else {
-            print("Wrong index field name format")
-            return
+            return "Wrong index field name format"
         }
         
         guard let indexName = query.subject as? String else {
-            print("Wrong index name format")
-            return
+            return "Wrong index name format"
         }
         
         guard let fileTableInfo = getTableFileInfo(for: tableName) else {
-            print("Couldn't construct URLs")
-            return
+            return "Couldn't construct URLs"
         }
         
         guard var remainingData = Int(exactly: manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0) else {
-            print("Error when determining size")
-            return
+            return "Error when determining size"
         }
         
         guard let schemaData = manager.contents(atPath: fileTableInfo.schemaURL.path) else {
-            print("File \(fileTableInfo.schemaURL).bin is empty")
-            return
+            return "File \(fileTableInfo.schemaURL).bin is empty"
         }
         
         var indexUrl = baseUrl
@@ -452,8 +453,7 @@ class QueryExecutor {
         indexUrl.appendPathExtension("bin")
         
         guard !FileManager.default.fileExists(atPath: indexUrl.path) else {
-            print("Index \(indexName) already exists")
-            return
+            return "Index \(indexName) already exists"
         }
         
         let jsonDecoder = JSONDecoder()
@@ -469,9 +469,8 @@ class QueryExecutor {
                 try fileDescriptor?.seek(toOffset: currentPage == 1 ? offset : offset + 1)
                 
                 guard let pageBinaryData = try fileDescriptor?.read(upToCount: Constants.fullPageSize) else {
-                    print("Could not read page data")
                     try fileDescriptor?.close()
-                    return
+                    return "Could not read page data"
                 }
                 
                 let page = try jsonDecoder.decode(Page.self, from: pageBinaryData)
@@ -485,8 +484,7 @@ class QueryExecutor {
                     guard let key = row.properties.first(where: { property in
                         property.name == indexField
                     })?.value else {
-                        print("Couldn,t get row value for indexed column")
-                        return
+                        return "Couldn,t get row value for indexed column"
                     }
                     fields.append(DictionaryPair(key: key, value: Adress(page: currentPage, row: count)))
                     count += 1
@@ -500,16 +498,16 @@ class QueryExecutor {
             
             let indexTreeData = try jsonEncoder.encode(tree)
             manager.createFile(atPath: indexUrl.path, contents: indexTreeData, attributes: nil)
-            print("Extracted")
+            return "Index created successfully"
         } catch let error {
-            print(error)
+            return error.localizedDescription
         }
+        return "Index creation failed"
     }
     
-    func dropIndex(query: Query) {
+    func dropIndex(query: Query) -> String {
         guard let indexNames = query.subjects as? [String] else {
-            print("No index names provided to drop")
-            return
+            return "No index names provided to drop"
         }
         
         for indexName in indexNames {
@@ -521,9 +519,10 @@ class QueryExecutor {
                     }
                 }
             } catch let error {
-                print(error.localizedDescription)
+                return error.localizedDescription
             }
         }
+        return "Index deletion successful"
     }
     
     // MARK: Private

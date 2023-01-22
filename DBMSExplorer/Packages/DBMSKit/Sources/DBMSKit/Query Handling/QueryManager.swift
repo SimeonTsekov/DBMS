@@ -7,17 +7,21 @@
 
 import Foundation
 
-class QueryManager {
+public class QueryManager: ObservableObject {
     let parser = CommandParser()
     let executor = QueryExecutor()
     
-    func handleQuery(query: String) {
+    public init() {
+        
+    }
+    
+    public func handleQuery(query: String) -> Any? {
         let clearedQuery = StringHelpers.clearStringWhitespaces(string: query)
         let tokens = StringHelpers.splitStringByCharacter(string: clearedQuery, character: " ")
 
         guard let method = DBKeyword(rawValue: tokens[0]) else {
             print("Enter a valid query method!")
-            return
+            return nil
         }
 
         let query = Query(method: method)
@@ -28,36 +32,38 @@ class QueryManager {
         switch query.method {
         case .dbCreate:
             parser.parseCreate(with: arguments, for: query)
-            executor.createTable(query: query)
+            return executor.createTable(query: query)
         case .dbDrop:
             parser.parseDrop(with: arguments, for: query)
-            executor.dropTable(query: query)
+            return executor.dropTable(query: query)
         case .dbList:
             guard arguments.isEmpty else {
                 print("Can't have anything after LIST")
-                return
+                return nil
             }
-            executor.listTables()
+            return executor.listTables()
         case .dbInfo:
             parser.parseInfo(with: arguments, for: query)
-            executor.tableInfo(query: query)
+            return executor.tableInfo(query: query)
         case .dbSelect:
             parser.parseSelect(with: arguments, for: query)
-            executor.select(query: query)
+            return executor.select(query: query)
         case .dbDelete:
             parser.parseDelete(with: arguments, for: query)
-            executor.delete(query: query)
+            return executor.delete(query: query)
         case .dbInsert:
             parser.parseInsert(with: arguments, for: query)
-            executor.insert(query: query)
+            return executor.insert(query: query)
         case .dbCreateIndex:
             parser.parseCreateIndex(with: arguments, for: query)
-            executor.createIndex(query: query)
+            return executor.createIndex(query: query)
         case .dbDropIndex:
             parser.parseDrop(with: arguments, for: query)
-            executor.dropIndex(query: query)
+            return executor.dropIndex(query: query)
         case .dbFrom, .dbWhere, .dbOrderBy, .dbDistinct, .dbValues, .dbDefault, .dbInto, .dbOn:
-            return
+            return nil
         }
+        
+        return nil
     }
 }

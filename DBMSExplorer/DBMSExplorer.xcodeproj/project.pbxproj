@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		EC4C2B9A297C5C4000FED53F /* DBMSKit in Frameworks */ = {isa = PBXBuildFile; productRef = EC4C2B99297C5C4000FED53F /* DBMSKit */; };
+		EC4C2B9E297C5E2E00FED53F /* ConsoleScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2B9D297C5E2E00FED53F /* ConsoleScreen.swift */; };
+		EC4C2BA1297C5EC600FED53F /* TablesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BA0297C5EC600FED53F /* TablesViewModel.swift */; };
+		EC4C2BA4297C648D00FED53F /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BA3297C648D00FED53F /* Table.swift */; };
+		EC4C2BA6297D367500FED53F /* TableScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BA5297D367500FED53F /* TableScreen.swift */; };
+		EC4C2BAA297D3A8400FED53F /* TableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BA9297D3A8400FED53F /* TableViewModel.swift */; };
+		EC4C2BAC297D671600FED53F /* ConsoleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BAB297D671600FED53F /* ConsoleViewModel.swift */; };
+		EC4C2BAF297D6BE700FED53F /* String+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BAE297D6BE700FED53F /* String+Identifiable.swift */; };
 		ECB8E203297C427A0044F6E7 /* DBMSExplorerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8E202297C427A0044F6E7 /* DBMSExplorerApp.swift */; };
 		ECB8E205297C427A0044F6E7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8E204297C427A0044F6E7 /* ContentView.swift */; };
 		ECB8E207297C427B0044F6E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECB8E206297C427B0044F6E7 /* Assets.xcassets */; };
@@ -37,6 +44,13 @@
 
 /* Begin PBXFileReference section */
 		EC2EB633297C5B3C0004BCB6 /* DBMSKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DBMSKit; sourceTree = "<group>"; };
+		EC4C2B9D297C5E2E00FED53F /* ConsoleScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleScreen.swift; sourceTree = "<group>"; };
+		EC4C2BA0297C5EC600FED53F /* TablesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TablesViewModel.swift; sourceTree = "<group>"; };
+		EC4C2BA3297C648D00FED53F /* Table.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Table.swift; sourceTree = "<group>"; };
+		EC4C2BA5297D367500FED53F /* TableScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableScreen.swift; sourceTree = "<group>"; };
+		EC4C2BA9297D3A8400FED53F /* TableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewModel.swift; sourceTree = "<group>"; };
+		EC4C2BAB297D671600FED53F /* ConsoleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleViewModel.swift; sourceTree = "<group>"; };
+		EC4C2BAE297D6BE700FED53F /* String+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Identifiable.swift"; sourceTree = "<group>"; };
 		ECB8E1FF297C427A0044F6E7 /* DBMSExplorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DBMSExplorer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECB8E202297C427A0044F6E7 /* DBMSExplorerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBMSExplorerApp.swift; sourceTree = "<group>"; };
 		ECB8E204297C427A0044F6E7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -91,6 +105,32 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		EC4C2B9F297C5EAF00FED53F /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				EC4C2BA0297C5EC600FED53F /* TablesViewModel.swift */,
+				EC4C2BA9297D3A8400FED53F /* TableViewModel.swift */,
+				EC4C2BAB297D671600FED53F /* ConsoleViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		EC4C2BA2297C647900FED53F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				EC4C2BA3297C648D00FED53F /* Table.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		EC4C2BAD297D6BD700FED53F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				EC4C2BAE297D6BE700FED53F /* String+Identifiable.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		ECB8E1F6297C427A0044F6E7 = {
 			isa = PBXGroup;
 			children = (
@@ -116,7 +156,10 @@
 		ECB8E201297C427A0044F6E7 /* DBMSExplorer */ = {
 			isa = PBXGroup;
 			children = (
+				EC4C2BAD297D6BD700FED53F /* Extensions */,
+				EC4C2BA2297C647900FED53F /* Model */,
 				ECB8E22C297C46430044F6E7 /* View */,
+				EC4C2B9F297C5EAF00FED53F /* ViewModel */,
 				ECB8E202297C427A0044F6E7 /* DBMSExplorerApp.swift */,
 				ECB8E204297C427A0044F6E7 /* ContentView.swift */,
 				ECB8E206297C427B0044F6E7 /* Assets.xcassets */,
@@ -154,6 +197,8 @@
 			isa = PBXGroup;
 			children = (
 				ECB8E22D297C46560044F6E7 /* TablesScreen.swift */,
+				EC4C2B9D297C5E2E00FED53F /* ConsoleScreen.swift */,
+				EC4C2BA5297D367500FED53F /* TableScreen.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -291,8 +336,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC4C2B9E297C5E2E00FED53F /* ConsoleScreen.swift in Sources */,
+				EC4C2BA4297C648D00FED53F /* Table.swift in Sources */,
+				EC4C2BAF297D6BE700FED53F /* String+Identifiable.swift in Sources */,
+				EC4C2BA1297C5EC600FED53F /* TablesViewModel.swift in Sources */,
 				ECB8E22E297C46560044F6E7 /* TablesScreen.swift in Sources */,
+				EC4C2BAC297D671600FED53F /* ConsoleViewModel.swift in Sources */,
+				EC4C2BA6297D367500FED53F /* TableScreen.swift in Sources */,
 				ECB8E205297C427A0044F6E7 /* ContentView.swift in Sources */,
+				EC4C2BAA297D3A8400FED53F /* TableViewModel.swift in Sources */,
 				ECB8E203297C427A0044F6E7 /* DBMSExplorerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
