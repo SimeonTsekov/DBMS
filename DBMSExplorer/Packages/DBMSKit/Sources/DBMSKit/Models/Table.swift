@@ -12,6 +12,7 @@ typealias TableRowProperty = (name: String, value: String, type: DBType)
 public struct TableSchema: Codable {
     public var name: String
     public var fields: [Field]
+    public var dataSize: Int64 = 0
 
     private enum CodingKeys: String, CodingKey {
         case name
@@ -152,9 +153,9 @@ struct Page: Codable {
 
 public struct Field: Codable, Identifiable {
     public let id = UUID()
-    public let name: String
-    public let type: DBType
-    public let defaultValue: String?
+    public var name: String
+    public var type: DBType
+    public var defaultValue: String?
 
     private enum CodingKeys: String, CodingKey {
         case name

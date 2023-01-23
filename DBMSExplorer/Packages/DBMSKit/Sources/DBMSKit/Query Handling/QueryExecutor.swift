@@ -122,9 +122,9 @@ class QueryExecutor {
             return nil
         }
         do {
-            let schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
+            var schema = try jsonDecoder.decode(TableSchema.self, from: schemaData)
             let data = try jsonDecoder.decode(TableData.self, from: tableData)
-            
+            schema.dataSize = manager.sizeOfFile(atPath: fileTableInfo.dataURL.path) ?? 0
             return schema
         } catch let error {
             print(error.localizedDescription)
@@ -255,9 +255,7 @@ class QueryExecutor {
         } catch let error {
             return error.localizedDescription
         }
-        
-        return fields
-    }
+}
     
     func delete(query: Query) -> String {
         guard let tableName = query.object as? String else {

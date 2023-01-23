@@ -354,7 +354,7 @@ class CommandParser {
 
         guard let keyword = tokens[0] as? DBKeyword,
               keyword == .dbFrom else {
-            print("Missing an INTO keyword")
+            print("Missing an FROM keyword")
             return
         }
 

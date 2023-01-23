@@ -36,3 +36,12 @@ struct ContentView: View {
         .environmentObject(queryManager)
     }
 }
+
+// INSERT INTO Sample2 (Id, Name, BirthDate) VALUES (1, Ivan, 10-07-2002), (2, Dragan, 29-03-2006), (3, Isidor, 25-11-1974), (4, Zyumbyul, 16-07-1975)
+// SELECT Name, BirthDate FROM Sample2 WHERE Id > 2 AND BirthDate >= 25.11.1974
+// SELECT Id, Name FROM Sample2 WHERE Name = Isidor
+// DELETE FROM Sample2 WHERE Id = 3
+// DELETE FROM Sample2 WHERE Id = 4 OR Id = 2 OR Id = 1
+// CREATEINDEX Sample2Id ON Sample2(Id)
+// SELECT Id, Name FROM Sample2 WHERE Id = 1
+// DROPINDEX Sample2Id

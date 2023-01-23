@@ -52,7 +52,7 @@ enum DBToken: String {
     }
 }
 
-public enum DBType: String {
+public enum DBType: String, CaseIterable {
     case dbInt = "int"
     case dbDate = "date"
     case dbString = "string"

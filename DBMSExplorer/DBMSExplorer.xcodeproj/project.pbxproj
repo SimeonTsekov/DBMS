@@ -15,6 +15,10 @@
 		EC4C2BAA297D3A8400FED53F /* TableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BA9297D3A8400FED53F /* TableViewModel.swift */; };
 		EC4C2BAC297D671600FED53F /* ConsoleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BAB297D671600FED53F /* ConsoleViewModel.swift */; };
 		EC4C2BAF297D6BE700FED53F /* String+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BAE297D6BE700FED53F /* String+Identifiable.swift */; };
+		EC4C2BB1297E764900FED53F /* TableSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BB0297E764900FED53F /* TableSheet.swift */; };
+		EC4C2BB3297E77F900FED53F /* TableSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BB2297E77F900FED53F /* TableSheetViewModel.swift */; };
+		EC4C2BB5297E7BCC00FED53F /* FieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BB4297E7BCC00FED53F /* FieldView.swift */; };
+		EC4C2BB7297E824C00FED53F /* Binding+Unwrapped.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C2BB6297E824C00FED53F /* Binding+Unwrapped.swift */; };
 		ECB8E203297C427A0044F6E7 /* DBMSExplorerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8E202297C427A0044F6E7 /* DBMSExplorerApp.swift */; };
 		ECB8E205297C427A0044F6E7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8E204297C427A0044F6E7 /* ContentView.swift */; };
 		ECB8E207297C427B0044F6E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECB8E206297C427B0044F6E7 /* Assets.xcassets */; };
@@ -51,6 +55,10 @@
 		EC4C2BA9297D3A8400FED53F /* TableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewModel.swift; sourceTree = "<group>"; };
 		EC4C2BAB297D671600FED53F /* ConsoleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleViewModel.swift; sourceTree = "<group>"; };
 		EC4C2BAE297D6BE700FED53F /* String+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Identifiable.swift"; sourceTree = "<group>"; };
+		EC4C2BB0297E764900FED53F /* TableSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSheet.swift; sourceTree = "<group>"; };
+		EC4C2BB2297E77F900FED53F /* TableSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSheetViewModel.swift; sourceTree = "<group>"; };
+		EC4C2BB4297E7BCC00FED53F /* FieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldView.swift; sourceTree = "<group>"; };
+		EC4C2BB6297E824C00FED53F /* Binding+Unwrapped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+Unwrapped.swift"; sourceTree = "<group>"; };
 		ECB8E1FF297C427A0044F6E7 /* DBMSExplorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DBMSExplorer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECB8E202297C427A0044F6E7 /* DBMSExplorerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBMSExplorerApp.swift; sourceTree = "<group>"; };
 		ECB8E204297C427A0044F6E7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -111,6 +119,7 @@
 				EC4C2BA0297C5EC600FED53F /* TablesViewModel.swift */,
 				EC4C2BA9297D3A8400FED53F /* TableViewModel.swift */,
 				EC4C2BAB297D671600FED53F /* ConsoleViewModel.swift */,
+				EC4C2BB2297E77F900FED53F /* TableSheetViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -127,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				EC4C2BAE297D6BE700FED53F /* String+Identifiable.swift */,
+				EC4C2BB6297E824C00FED53F /* Binding+Unwrapped.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -199,6 +209,8 @@
 				ECB8E22D297C46560044F6E7 /* TablesScreen.swift */,
 				EC4C2B9D297C5E2E00FED53F /* ConsoleScreen.swift */,
 				EC4C2BA5297D367500FED53F /* TableScreen.swift */,
+				EC4C2BB0297E764900FED53F /* TableSheet.swift */,
+				EC4C2BB4297E7BCC00FED53F /* FieldView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -339,11 +351,15 @@
 				EC4C2B9E297C5E2E00FED53F /* ConsoleScreen.swift in Sources */,
 				EC4C2BA4297C648D00FED53F /* Table.swift in Sources */,
 				EC4C2BAF297D6BE700FED53F /* String+Identifiable.swift in Sources */,
+				EC4C2BB1297E764900FED53F /* TableSheet.swift in Sources */,
+				EC4C2BB7297E824C00FED53F /* Binding+Unwrapped.swift in Sources */,
 				EC4C2BA1297C5EC600FED53F /* TablesViewModel.swift in Sources */,
+				EC4C2BB5297E7BCC00FED53F /* FieldView.swift in Sources */,
 				ECB8E22E297C46560044F6E7 /* TablesScreen.swift in Sources */,
 				EC4C2BAC297D671600FED53F /* ConsoleViewModel.swift in Sources */,
 				EC4C2BA6297D367500FED53F /* TableScreen.swift in Sources */,
 				ECB8E205297C427A0044F6E7 /* ContentView.swift in Sources */,
+				EC4C2BB3297E77F900FED53F /* TableSheetViewModel.swift in Sources */,
 				EC4C2BAA297D3A8400FED53F /* TableViewModel.swift in Sources */,
 				ECB8E203297C427A0044F6E7 /* DBMSExplorerApp.swift in Sources */,
 			);

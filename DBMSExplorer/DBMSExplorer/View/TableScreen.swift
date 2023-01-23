@@ -31,17 +31,11 @@ struct TableScreen: View {
                         .foregroundColor(Color.primary.opacity(0.75))
                 }
             } header: {
-                Text("Values")
+                Text("Values: \(tableViewModel.rows.count), \(tableViewModel.schema.dataSize) bytes")
             }
         }
         .navigationTitle(tableViewModel.tableName)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            Button {
-            } label: {
-                Image(systemName: "plus")
-            }
-        }
         .onAppear {
             tableViewModel.fetchRows()
         }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TablesScreen: View {
     @ObservedObject private var tablesViewModel: TablesViewModel
+    @State private var showingSheet = false
     let title: String
     
     init(title: String, tablesViewModel: TablesViewModel) {
@@ -31,9 +32,15 @@ struct TablesScreen: View {
             .navigationTitle(title)
             .toolbar {
                 Button {
+                    showingSheet.toggle()
                 } label: {
                     Image(systemName: "plus")
                 }
+            }
+            .sheet(isPresented: $showingSheet, onDismiss: {
+                tablesViewModel.getTableData()
+            }) {
+                TableSheet(tableSheetViewModel: TableSheetViewModel(manager: tablesViewModel.manager))
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
